@@ -235,6 +235,7 @@
       flex: 1;
       display: flex;
       justify-content: center;
+      align-items: center;
       padding: 24px;
       background: #e8e8e8;
       overflow-y: auto;
@@ -243,16 +244,14 @@
 
     .chat-container {
       width: 100%;
-      max-width: 851px;
       background: var(--bg-tertiary);
       border: 1px solid var(--border-tertiary);
-      border-radius: 12px 12px 0 0;
+      border-radius: 16px 16px 0 0;
       box-shadow: 0px -1px 6px 0px rgba(83, 83, 83, 0.15), 0px 1px 6px 0px rgba(83, 83, 83, 0.15);
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      height: fit-content;
-      max-height: calc(100vh - 48px);
+      height: 618px;
     }
 
     /* Chat Header */
@@ -515,40 +514,59 @@
       cursor: pointer;
     }
 
-    /* Admin messages container */
+    /* Admin messages container - messages pile up from the bottom */
     .admin-messages-container {
       display: flex;
       flex-direction: column;
+      justify-content: flex-end;
+      min-height: 100%;
     }
 
     /* ==================== MODAL STYLES ==================== */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(9, 9, 7, 0.5);
-      z-index: 1000;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .modal-overlay.active {
-      display: flex;
-    }
-
-    .modal-container {
+    /* Subflow panel - replaces chat in the main content area */
+    .subflow-wrapper {
+      position: relative;
       width: 100%;
       max-width: 853px;
-      max-height: 90vh;
-      background: var(--bg-tertiary);
-      border-radius: 12px;
+      height: 618px;
       overflow: hidden;
+    }
+
+    .chat-container {
+      transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease;
+    }
+
+    .subflow-panel {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 618px;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-tertiary);
+      border-radius: 16px 16px 0 0;
+      box-shadow: 0px -1px 6px 0px rgba(83, 83, 83, 0.15), 0px 1px 6px 0px rgba(83, 83, 83, 0.15);
       display: flex;
       flex-direction: column;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      overflow: hidden;
+      transform: translateX(100%);
+      opacity: 0;
+      transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .subflow-panel.active {
+      transform: translateX(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* When subflow is active, hide the chat */
+    .subflow-wrapper.subflow-active .chat-container {
+      transform: translateX(-30%);
+      opacity: 0;
+      pointer-events: none;
     }
 
     .modal-header {
@@ -557,6 +575,7 @@
       padding: 16px;
       border-bottom: 1px solid var(--border-tertiary);
       background: var(--bg-tertiary);
+      flex-shrink: 0;
     }
 
     .modal-back {
@@ -587,6 +606,7 @@
       padding: 16px 32px;
       border-top: 1px solid var(--border-tertiary);
       background: var(--bg-tertiary);
+      flex-shrink: 0;
     }
 
     /* Progress Bar */
@@ -614,16 +634,17 @@
     /* Info Banner */
     .info-banner {
       display: flex;
-      gap: 16px;
+      flex-direction: column;
+      gap: 8px;
       padding: 16px;
-      background: linear-gradient(135deg, #DAFDA0 0%, #FDFDA0 100%);
-      border-radius: 8px;
+      background: linear-gradient(229deg, #FDFDA0 0%, #DAFDA0 100%);
+      border-radius: 12px;
       margin-bottom: 24px;
     }
 
     .info-banner-icon {
       width: 24px;
-      height: 24px;
+      height: 19px;
       flex-shrink: 0;
     }
 
@@ -632,8 +653,8 @@
     }
 
     .info-banner-title {
-      font-size: 16px;
-      font-weight: 500;
+      font-size: 18px;
+      font-weight: 700;
       color: var(--content-primary);
       margin-bottom: 8px;
       display: flex;
@@ -793,7 +814,7 @@
     }
 
     .packaging-description {
-      font-size: 14px;
+      font-size: 16px;
       color: var(--content-secondary);
       line-height: 24px;
       margin-bottom: 16px;
@@ -872,18 +893,7 @@
       margin: 24px 0;
     }
 
-    .earnings-box {
-      background: var(--bg-secondary);
-      border-radius: 8px;
-      padding: 16px;
-    }
-
-    .earnings-title {
-      font-size: 16px;
-      font-weight: 500;
-      color: var(--content-primary);
-      margin-bottom: 16px;
-    }
+    /* earnings-box styles defined below in extended styles */
 
     .earnings-row {
       display: flex;
@@ -934,6 +944,177 @@
 
     .modal-step.active {
       display: block;
+    }
+
+    /* Expanded address fields */
+    .address-expanded {
+      display: none;
+      margin-top: 16px;
+    }
+
+    .address-expanded.visible {
+      display: block;
+    }
+
+    .form-row-3col {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .form-row-3col .form-field {
+      flex: 1;
+    }
+
+    .form-input-with-icon {
+      position: relative;
+    }
+
+    .form-input-with-icon .form-input {
+      padding-left: 40px;
+      width: 100%;
+    }
+
+    .form-input-with-icon svg {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--content-quartenary);
+      pointer-events: none;
+    }
+
+    .form-input-with-icon .calendar-icon {
+      left: auto;
+      right: 14px;
+    }
+
+    .form-helper-text {
+      font-size: 12px;
+      color: var(--content-quartenary);
+      line-height: 18px;
+      margin-top: 4px;
+    }
+
+    /* Date input with calendar icon */
+    .date-input-wrapper {
+      position: relative;
+    }
+
+    .date-input-wrapper .form-input {
+      width: 100%;
+      padding-right: 44px;
+    }
+
+    .date-input-wrapper .date-icon {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      width: 20px;
+      height: 20px;
+    }
+
+    /* Packaging images from Figma */
+    .packaging-images img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .packaging-image-main {
+      overflow: hidden;
+    }
+
+    .packaging-image-thumb {
+      overflow: hidden;
+    }
+
+    /* Updated earnings box with border */
+    .earnings-box {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-tertiary);
+      border-radius: 12px;
+      padding: 16px;
+    }
+
+    .earnings-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--content-primary);
+      margin-bottom: 16px;
+    }
+
+    /* Legal text box */
+    .legal-box {
+      border: 1px solid var(--border-tertiary);
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 24px;
+    }
+
+    .legal-box-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--content-primary);
+      margin-bottom: 8px;
+    }
+
+    .legal-box-text {
+      font-size: 14px;
+      color: var(--content-secondary);
+      line-height: 21px;
+    }
+
+    /* Phone input with flag */
+    .phone-input-wrapper {
+      display: flex;
+      align-items: center;
+      border: 1px solid var(--border-tertiary);
+      border-radius: 8px;
+      overflow: hidden;
+      height: 48px;
+    }
+
+    .phone-input-wrapper.filled {
+      background: var(--bg-secondary);
+    }
+
+    .phone-flag {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 0 8px 0 12px;
+      font-size: 14px;
+      cursor: pointer;
+      flex-shrink: 0;
+      border-right: 1px solid var(--border-tertiary);
+      height: 100%;
+    }
+
+    .phone-flag img {
+      width: 20px;
+      height: 14px;
+    }
+
+    .phone-flag svg {
+      width: 12px;
+      height: 12px;
+      color: var(--content-tertiary);
+    }
+
+    .phone-input-wrapper input {
+      border: none;
+      outline: none;
+      padding: 12px;
+      font-family: var(--font-family);
+      font-size: 14px;
+      color: var(--content-primary);
+      background: transparent;
+      flex: 1;
+      height: 100%;
     }
   </style>
 </head>
@@ -1744,6 +1925,7 @@
 
     <!-- Main Content -->
     <div class="main-content">
+      <div class="subflow-wrapper" id="subflow-wrapper">
       <div class="chat-container">
         <!-- Header -->
         <div class="chat-header">
@@ -1806,21 +1988,18 @@
           </div>
         </div>
       </div>
-    </div>
-  </div>
 
-  <!-- Confirm Sale Modal -->
-  <div class="modal-overlay" id="confirm-sale-modal">
-    <div class="modal-container">
-      <!-- Modal Header -->
-      <div class="modal-header">
-        <button class="modal-back" onclick="handleModalBack()">
-          <svg viewBox="0 0 24 24" fill="none">
-            <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          Confirm sale
-        </button>
-      </div>
+      <!-- Confirm Sale Subflow Panel -->
+      <div class="subflow-panel" id="confirm-sale-panel">
+        <!-- Panel Header -->
+        <div class="modal-header">
+          <button class="modal-back" onclick="handleModalBack()">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Confirm sale
+          </button>
+        </div>
 
       <!-- Modal Content -->
       <div class="modal-content">
@@ -1833,13 +2012,11 @@
           </div>
 
           <div class="info-banner">
-            <div class="info-banner-icon">
-              <svg width="24" height="20" viewBox="0 0 24 20" fill="none">
-                <path d="M20 0H4C1.79 0 0 1.79 0 4V16C0 18.21 1.79 20 4 20H20C22.21 20 24 18.21 24 16V4C24 1.79 22.21 0 20 0ZM20 16H4V8H20V16ZM20 4H4V2H20V4Z" fill="#92400E"/>
-              </svg>
-            </div>
             <div class="info-banner-content">
-              <div class="info-banner-title">The buyer paid for the delivery!</div>
+              <div class="info-banner-title">
+                <img src="https://www.figma.com/api/mcp/asset/2110182e-598d-474b-909e-5aa18c49b749" alt="" width="24" height="19">
+                The buyer paid for the delivery!
+              </div>
               <div class="info-banner-text">We'll handle pickup and delivery with trusted carriers, and provide you with a shipping label—just let us know where and when to pick up the order.</div>
             </div>
           </div>
@@ -1851,31 +2028,30 @@
           <div class="form-row">
             <div class="form-field">
               <label class="form-label">First name</label>
-              <input type="text" class="form-input filled" value="Jonas" placeholder="First name">
+              <input type="text" class="form-input" placeholder="First name">
             </div>
             <div class="form-field">
               <label class="form-label">Last name</label>
-              <input type="text" class="form-input filled" value="Jaeger" placeholder="Last name">
+              <input type="text" class="form-input" placeholder="Last name">
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-field">
               <label class="form-label">Company name (optional)</label>
-              <input type="text" class="form-input" placeholder="Company name">
+              <input type="text" class="form-input" placeholder="Last name">
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-field">
               <label class="form-label">Phone number</label>
-              <div style="display: flex; gap: 8px;">
-                <select class="form-select" style="width: 100px;">
-                  <option>+49</option>
-                  <option>+1</option>
-                  <option>+44</option>
-                </select>
-                <input type="tel" class="form-input filled" value="176 555 1234" placeholder="Phone number" style="flex: 1;">
+              <div class="phone-input-wrapper">
+                <div class="phone-flag">
+                  <span style="font-size: 16px;">🇩🇪</span>
+                  <svg viewBox="0 0 12 12" fill="none"><path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <input type="tel" placeholder="Phone number">
               </div>
             </div>
             <div class="form-field">
@@ -1891,12 +2067,48 @@
           <div class="form-row">
             <div class="form-field">
               <label class="form-label">Address Search</label>
-              <input type="text" class="form-input filled" value="Atelierstrasse 12, 80000 Munich" placeholder="Start typing your address...">
+              <div class="form-input-with-icon">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.5"/><path d="M11 11L14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                <input type="text" class="form-input" id="address-search" placeholder="Search for your address..." oninput="toggleAddressExpanded(this.value)">
+              </div>
+            </div>
+          </div>
+
+          <!-- Expanded address fields (shown after address search) -->
+          <div class="address-expanded" id="address-expanded">
+            <div class="form-row-3col">
+              <div class="form-field">
+                <label class="form-label">State/Province</label>
+                <input type="text" class="form-input filled" value="Bavaria">
+              </div>
+              <div class="form-field">
+                <label class="form-label">City</label>
+                <input type="text" class="form-input filled" value="German Island">
+              </div>
+              <div class="form-field">
+                <label class="form-label">Zip</label>
+                <input type="text" class="form-input filled" value="80797">
+              </div>
+            </div>
+            <div class="form-row-3col">
+              <div class="form-field">
+                <label class="form-label">Street</label>
+                <input type="text" class="form-input filled" value="Winzererstraße">
+              </div>
+              <div class="form-field">
+                <label class="form-label">House number</label>
+                <input type="text" class="form-input filled" value="90a 90">
+              </div>
+              <div class="form-field">
+                <label class="form-label">Address line 2</label>
+                <input type="text" class="form-input" placeholder="Appartment 35, Left">
+                <span class="form-helper-text">Apartement/Suite, Unit number, Floor, Building</span>
+              </div>
             </div>
           </div>
 
           <div class="form-checkbox">
-            <input type="checkbox" id="save-address" checked>
+            <input type="checkbox" id="save-address">
             <label for="save-address" class="form-checkbox-label">Save this address for future orders</label>
           </div>
         </div>
@@ -1913,11 +2125,15 @@
 
           <div class="packaging-images">
             <div class="packaging-image-main">
-              <span>📦 Packaging Kit Image</span>
+              <img src="https://www.figma.com/api/mcp/asset/b914d19d-172f-4ea3-8af0-4a80d9871822" alt="TV-style bike packaging box">
             </div>
             <div class="packaging-image-small">
-              <div class="packaging-image-thumb">📦</div>
-              <div class="packaging-image-thumb">📦</div>
+              <div class="packaging-image-thumb">
+                <img src="https://www.figma.com/api/mcp/asset/7471449c-679f-4c84-96fc-baa5bce1da49" alt="Bike wheel protection">
+              </div>
+              <div class="packaging-image-thumb">
+                <img src="https://www.figma.com/api/mcp/asset/21f4de34-f26a-4202-b595-c48be50c4962" alt="Packaging accessories">
+              </div>
             </div>
           </div>
 
@@ -1934,10 +2150,8 @@
           </div>
 
           <a class="link-text">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            How to pack your bike for transport
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M8 7V11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="5" r="0.75" fill="currentColor"/></svg>
+            How to pack your bike with buycycle's packaging
           </a>
         </div>
 
@@ -1957,13 +2171,15 @@
 
           <div class="form-field">
             <label class="form-label">Select a date</label>
-            <select class="form-select" id="pickup-date">
-              <option value="">Select a date</option>
-              <option value="2025-01-24">Friday, 24 January 2025</option>
-              <option value="2025-01-25">Saturday, 25 January 2025</option>
-              <option value="2025-01-27">Monday, 27 January 2025</option>
-              <option value="2025-01-28">Tuesday, 28 January 2025</option>
-            </select>
+            <div class="date-input-wrapper">
+              <input type="text" class="form-input filled" id="pickup-date" value="19/01/2025">
+              <svg class="date-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <rect x="2" y="3" width="16" height="15" rx="2" stroke="#535353" stroke-width="1.5"/>
+                <path d="M2 7H18" stroke="#535353" stroke-width="1.5"/>
+                <path d="M6 1V4" stroke="#535353" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M14 1V4" stroke="#535353" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
           </div>
 
           <div class="time-row">
@@ -1976,7 +2192,7 @@
               <option value="13:00">13:00</option>
               <option value="14:00">14:00</option>
             </select>
-            <span class="time-label">To:</span>
+            <span class="time-label" style="margin-left: 8px;">To:</span>
             <select class="form-select time-select" id="pickup-time-to">
               <option value="14:00">14:00</option>
               <option value="15:00">15:00</option>
@@ -1986,9 +2202,9 @@
             </select>
           </div>
 
-          <div class="form-checkbox" style="margin-top: 24px;">
+          <div class="form-checkbox" style="margin-top: 32px;">
             <input type="checkbox" id="confirm-availability" checked>
-            <label for="confirm-availability" class="form-checkbox-label">I confirm that someone will be available at the pick-up location during the selected time window.</label>
+            <label for="confirm-availability" class="form-checkbox-label">I confirm that my sold item matches the images, details and condition described in the ad. buycycle may reduce my payment by up to 15% or return the item at my expense if any undisclosed issues are discovered or if improper packing causes damage.</label>
           </div>
         </div>
 
@@ -2000,10 +2216,10 @@
             <div class="progress-step completed"></div>
           </div>
 
-          <div class="section-title">Summary</div>
+          <div class="section-title" style="font-size: 24px; font-weight: 500; margin-bottom: 24px;">Summary</div>
 
           <div class="summary-section">
-            <div class="summary-label">Order pick-up location:</div>
+            <div class="summary-label" style="font-size: 18px; font-weight: 700;">Order pick-up location:</div>
             <div class="summary-value">
               Jonas Jaeger<br>
               Atelierstrasse 12<br>
@@ -2012,52 +2228,53 @@
           </div>
 
           <div class="summary-section">
-            <div class="summary-label">Order pick-up date:</div>
-            <div class="summary-value" id="summary-date">24 January 2025, from 12:00 to 16:00</div>
+            <div class="summary-label" style="font-size: 18px; font-weight: 700;">Order pick-up date:</div>
+            <div class="summary-value" id="summary-date">24.January 2024 from 12:00 to 14:00</div>
           </div>
 
           <div class="summary-section">
-            <div class="summary-label">Packaging:</div>
-            <div class="summary-value">Buycycle's packaging will be delivered to your address within 3 to 5 business days.</div>
+            <div class="summary-label" style="font-size: 18px; font-weight: 700;">Packaging:</div>
+            <div class="summary-value">Buycycle's packaging will be delivered to your address within x to y business days.</div>
           </div>
 
           <div class="earnings-box">
-            <div class="earnings-title">Your earnings</div>
+            <div class="earnings-title">Your earnings:</div>
             <div class="earnings-row">
               <span class="earnings-row-label">Sale price</span>
-              <span class="earnings-row-value">€7,300</span>
+              <span class="earnings-row-value" style="font-weight: 500;">€ 7.250</span>
             </div>
             <div class="earnings-row">
-              <span class="earnings-row-label">buycycle commission</span>
-              <span class="earnings-row-value">-€365</span>
+              <span class="earnings-row-label">Seller Protection</span>
+              <span class="earnings-row-value">€ 253</span>
             </div>
             <div class="earnings-row">
-              <span class="earnings-row-label">Buycycle fee (4.9%)</span>
-              <span class="earnings-row-value">-€191</span>
+              <span class="earnings-row-label">Boosting rate (x.xx%)</span>
+              <span class="earnings-row-value">€ 253</span>
             </div>
             <div class="earnings-total">
               <span class="earnings-total-label">You receive</span>
-              <span class="earnings-total-value">€6,744</span>
+              <span class="earnings-total-value">€ 6.744</span>
             </div>
           </div>
 
-          <div class="legal-text">
-            <strong>By selling on buycycle</strong>, you agree that buycycle will manage the payment, and hold the purchase amount, minus our commission, until confirmation that the buyer has received the order.
-            <br><br>
-            If the order has not been confirmed as received by the buyer within 14 days of the confirmed delivery date, the order will automatically be considered as confirmed and the amount will be transferred to your account.
+          <div class="legal-box">
+            <div class="legal-box-title">By selling on buycycle:</div>
+            <div class="legal-box-text">I confirm that my sold item matches the images, details and condition described in the ad. buycycle may reduce my payment by up to 15% or return the item at my expense if any undisclosed issues are discovered or if improper packing causes damage.</div>
           </div>
         </div>
       </div>
 
-      <!-- Modal Footer -->
-      <div class="modal-footer">
-        <button class="btn-primary" style="width: 100%; height: 48px;" onclick="handleModalNext()" id="modal-cta">
-          Continue to packaging
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </button>
+        <!-- Panel Footer -->
+        <div class="modal-footer">
+          <button class="btn-primary" style="width: 100%; height: 48px;" onclick="handleModalNext()" id="modal-cta">
+            Continue to packaging
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
       </div>
+      </div><!-- end subflow-wrapper -->
     </div>
   </div>
 
@@ -2077,15 +2294,17 @@
       4: 'Confirm details'
     };
 
-    // Modal functions
+    // Subflow panel functions
     function openConfirmSaleModal() {
       modalCurrentStep = 1;
       updateModalStep();
-      document.getElementById('confirm-sale-modal').classList.add('active');
+      document.getElementById('confirm-sale-panel').classList.add('active');
+      document.getElementById('subflow-wrapper').classList.add('subflow-active');
     }
 
     function closeConfirmSaleModal() {
-      document.getElementById('confirm-sale-modal').classList.remove('active');
+      document.getElementById('confirm-sale-panel').classList.remove('active');
+      document.getElementById('subflow-wrapper').classList.remove('subflow-active');
     }
 
     function handleModalBack() {
@@ -2133,23 +2352,36 @@
     }
 
     function updateSummaryDate() {
-      const dateSelect = document.getElementById('pickup-date');
+      const dateInput = document.getElementById('pickup-date');
       const timeFrom = document.getElementById('pickup-time-from');
       const timeTo = document.getElementById('pickup-time-to');
 
-      let dateText = '24 January 2025';
-      if (dateSelect && dateSelect.value) {
-        const date = new Date(dateSelect.value);
-        const options = { day: 'numeric', month: 'long', year: 'numeric' };
-        dateText = date.toLocaleDateString('en-GB', options);
+      let dateText = '24.January 2024';
+      if (dateInput && dateInput.value) {
+        const parts = dateInput.value.split('/');
+        if (parts.length === 3) {
+          const date = new Date(parts[2], parts[1] - 1, parts[0]);
+          const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+          dateText = `${date.getDate()}.${months[date.getMonth()]} ${date.getFullYear()}`;
+        }
       }
 
       const fromTime = timeFrom ? timeFrom.value : '12:00';
-      const toTime = timeTo ? timeTo.value : '16:00';
+      const toTime = timeTo ? timeTo.value : '14:00';
 
       const summaryDateEl = document.getElementById('summary-date');
       if (summaryDateEl) {
-        summaryDateEl.textContent = `${dateText}, from ${fromTime} to ${toTime}`;
+        summaryDateEl.textContent = `${dateText} from ${fromTime} to ${toTime}`;
+      }
+    }
+
+    // Toggle expanded address fields
+    function toggleAddressExpanded(value) {
+      const expanded = document.getElementById('address-expanded');
+      if (value.length > 3) {
+        expanded.classList.add('visible');
+      } else {
+        expanded.classList.remove('visible');
       }
     }
 
@@ -3120,7 +3352,7 @@
 
           // Add special onclick for "Confirm sale" button (managed shipping, seller, first step)
           let onclick = '';
-          if (action.text === 'Confirm sale' && currentShippingType === 'managed' && currentPerspective === 'seller') {
+          if (action.text === 'Confirm pick up address and date' && currentShippingType === 'managed' && currentPerspective === 'seller') {
             onclick = ' onclick="openConfirmSaleModal()"';
           }
 
