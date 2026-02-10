@@ -1,0 +1,3296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>buycycle - Shipping Flow Prototype</title>
+  <style>
+    /* buycycle Design System Tokens */
+    :root {
+      --bg-primary: #FCFCFC;
+      --bg-secondary: #F3F3F3;
+      --bg-tertiary: #FFFFFF;
+      --bg-quartenary: #EAEAEA;
+      --bg-primary-reverse: #090907;
+
+      --content-primary: #090907;
+      --content-secondary: #333333;
+      --content-tertiary: #535353;
+      --content-quartenary: #A9A9A9;
+      --content-primary-reverse: #FCFCFC;
+
+      --border-tertiary: #EAEAEA;
+
+      --font-family: 'Neue Haas Grotesk Text Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-family);
+      background-color: #f0f0f0;
+      min-height: 100vh;
+    }
+
+    .prototype-container {
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 320px;
+      background: var(--bg-primary);
+      border-right: 1px solid var(--border-tertiary);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      height: 100vh;
+      position: sticky;
+      top: 0;
+      overflow: hidden;
+    }
+
+    .sidebar-header {
+      padding: 20px;
+      border-bottom: 1px solid var(--border-tertiary);
+    }
+
+    .sidebar-logo {
+      font-size: 20px;
+      font-weight: 500;
+      color: var(--content-primary);
+      margin-bottom: 4px;
+    }
+
+    .sidebar-subtitle {
+      font-size: 12px;
+      color: var(--content-tertiary);
+    }
+
+    /* Toggle Sections */
+    .toggle-section {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-tertiary);
+    }
+
+    .toggle-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--content-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .toggle-buttons {
+      display: flex;
+      background: var(--bg-quartenary);
+      border-radius: 6px;
+      padding: 3px;
+    }
+
+    .toggle-btn {
+      flex: 1;
+      padding: 8px 12px;
+      border: none;
+      background: transparent;
+      font-family: var(--font-family);
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--content-tertiary);
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .toggle-btn.active {
+      background: var(--bg-tertiary);
+      color: var(--content-primary);
+      font-weight: 500;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .toggle-btn:hover:not(.active) { color: var(--content-primary); }
+
+    /* Shipping Type Info */
+    .shipping-type-info {
+      padding: 12px;
+      background: var(--bg-secondary);
+      border-radius: 6px;
+      margin-top: 12px;
+    }
+
+    .shipping-type-title {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--content-primary);
+      margin-bottom: 4px;
+    }
+
+    .shipping-type-desc {
+      font-size: 12px;
+      color: var(--content-tertiary);
+      line-height: 16px;
+    }
+
+    /* Steps Navigation */
+    .steps-nav {
+      flex: 1;
+      padding: 16px 0;
+      overflow-y: auto;
+      min-height: 0;
+    }
+
+    .steps-section-title {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--content-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 8px 20px;
+      margin-top: 8px;
+    }
+
+    .steps-section-title:first-child { margin-top: 0; }
+
+    .step-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 10px 20px;
+      cursor: pointer;
+      transition: background 0.2s;
+      border-left: 3px solid transparent;
+    }
+
+    .step-item:hover { background: var(--bg-secondary); }
+    .step-item.active {
+      background: var(--bg-secondary);
+      border-left-color: var(--content-primary);
+    }
+
+    .step-item.completed .step-indicator {
+      background: #E8F8F0;
+      border-color: #146C43;
+    }
+
+    .step-item.completed .step-indicator svg { display: block; }
+    .step-item.completed .step-number { display: none; }
+
+    .step-item.failed .step-indicator {
+      background: #FFEBEB;
+      border-color: #B91C1C;
+    }
+
+    .step-item.failed .step-indicator svg.fail-icon { display: block; }
+    .step-item.failed .step-number { display: none; }
+
+    .step-indicator {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 2px solid var(--border-tertiary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      background: var(--bg-tertiary);
+    }
+
+    .step-indicator svg { display: none; width: 12px; height: 12px; }
+
+    .step-number {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--content-tertiary);
+    }
+
+    .step-content { flex: 1; }
+
+    .step-title {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--content-primary);
+      line-height: 18px;
+    }
+
+    .step-description {
+      font-size: 11px;
+      color: var(--content-tertiary);
+      line-height: 14px;
+      margin-top: 2px;
+    }
+
+    .step-item.active .step-indicator {
+      border-color: var(--content-primary);
+      background: var(--bg-primary-reverse);
+    }
+
+    .step-item.active .step-number { color: var(--content-primary-reverse); }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      padding: 24px;
+      background: #e8e8e8;
+      overflow-y: auto;
+      height: 100vh;
+    }
+
+    .chat-container {
+      width: 100%;
+      max-width: 851px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-tertiary);
+      border-radius: 12px 12px 0 0;
+      box-shadow: 0px -1px 6px 0px rgba(83, 83, 83, 0.15), 0px 1px 6px 0px rgba(83, 83, 83, 0.15);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: fit-content;
+      max-height: calc(100vh - 48px);
+    }
+
+    /* Chat Header */
+    .chat-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px;
+      border-bottom: 1px solid var(--border-tertiary);
+      background: var(--bg-tertiary);
+    }
+
+    .chat-header-content {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .product-image-container {
+      position: relative;
+      width: 80px;
+      height: 45px;
+    }
+
+    .product-image {
+      width: 80px;
+      height: 45px;
+      border-radius: 3px;
+      object-fit: cover;
+      background: var(--bg-secondary);
+    }
+
+    .user-avatar-small {
+      position: absolute;
+      bottom: -7px;
+      right: -2px;
+      width: 21px;
+      height: 21px;
+      border-radius: 100px;
+      object-fit: cover;
+      background: var(--bg-quartenary);
+    }
+
+    .product-info h2 {
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 24px;
+      color: var(--content-primary);
+    }
+
+    .product-info .price {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 21px;
+      color: var(--content-secondary);
+    }
+
+    .options-icon {
+      width: 24px;
+      height: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* View Order Progress */
+    .order-progress-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 13px 16px;
+      border-bottom: 1px solid var(--border-tertiary);
+      cursor: pointer;
+    }
+
+    .order-progress-bar:hover {
+      background: var(--bg-secondary);
+    }
+
+    .order-progress-text {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--content-primary);
+      text-decoration: underline;
+    }
+
+    /* Chat Body */
+    .chat-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    /* Protection Banner */
+    .protection-banner {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px;
+      border-bottom: 1px solid var(--border-tertiary);
+    }
+
+    .protection-icon {
+      width: 24px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+
+    .protection-text {
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 18px;
+      color: var(--content-tertiary);
+    }
+
+    /* Admin Message - Simple text style (no colored boxes) */
+    .admin-message {
+      padding: 16px;
+      border-top: 1px solid var(--border-tertiary);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .admin-message:first-child {
+      border-top: none;
+    }
+
+    /* Inactive admin message (past steps) */
+    .admin-message.inactive .admin-message-title {
+      color: var(--content-tertiary);
+    }
+
+    .admin-message.inactive .admin-message-body {
+      color: var(--content-tertiary);
+    }
+
+    /* Active admin message (current step) */
+    .admin-message.active .admin-message-title {
+      color: var(--content-primary);
+    }
+
+    .admin-message.active .admin-message-body {
+      color: var(--content-secondary);
+    }
+
+    .admin-message-title {
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 24px;
+    }
+
+    .admin-message-body {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 21px;
+    }
+
+    .admin-message-time {
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 18px;
+      color: var(--content-tertiary);
+    }
+
+    /* Action Buttons - Only shown on active admin message */
+    .action-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .btn-primary {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      height: 36px;
+      padding: 8px 12px;
+      background: var(--bg-primary-reverse);
+      color: var(--content-primary-reverse);
+      border: none;
+      border-radius: 6px;
+      font-family: var(--font-family);
+      font-size: 14px;
+      font-weight: 400;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .btn-primary:hover { opacity: 0.9; }
+
+    .btn-primary svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .btn-secondary {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      height: 36px;
+      padding: 8px 12px;
+      background: var(--bg-tertiary);
+      color: var(--content-primary);
+      border: 1px solid var(--border-tertiary);
+      border-radius: 6px;
+      font-family: var(--font-family);
+      font-size: 14px;
+      font-weight: 400;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-secondary:hover { background: var(--bg-secondary); }
+
+    /* Comment Input */
+    .comment-section {
+      background: var(--bg-secondary);
+      padding: 16px;
+      margin-top: auto;
+    }
+
+    .comment-input-container {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .input-wrapper {
+      flex: 1;
+      height: 48px;
+    }
+
+    .message-input {
+      width: 100%;
+      height: 48px;
+      padding: 10px 16px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-tertiary);
+      border-radius: 8px;
+      font-family: var(--font-family);
+      font-size: 14px;
+      color: var(--content-primary);
+      outline: none;
+    }
+
+    .message-input::placeholder { color: var(--content-tertiary); }
+    .message-input:focus { border-color: var(--content-primary); }
+
+    .send-button {
+      width: 24px;
+      height: 24px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+    }
+
+    /* Admin messages container */
+    .admin-messages-container {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ==================== MODAL STYLES ==================== */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(9, 9, 7, 0.5);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-container {
+      width: 100%;
+      max-width: 853px;
+      max-height: 90vh;
+      background: var(--bg-tertiary);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      padding: 16px;
+      border-bottom: 1px solid var(--border-tertiary);
+      background: var(--bg-tertiary);
+    }
+
+    .modal-back {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: var(--font-family);
+      font-size: 20px;
+      font-weight: 500;
+      color: var(--content-primary);
+    }
+
+    .modal-back svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .modal-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px 32px;
+    }
+
+    .modal-footer {
+      padding: 16px 32px;
+      border-top: 1px solid var(--border-tertiary);
+      background: var(--bg-tertiary);
+    }
+
+    /* Progress Bar */
+    .progress-bar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 32px;
+    }
+
+    .progress-step {
+      flex: 1;
+      height: 8px;
+      background: var(--bg-quartenary);
+      border-radius: 4px;
+    }
+
+    .progress-step.active {
+      background: var(--bg-primary-reverse);
+    }
+
+    .progress-step.completed {
+      background: var(--bg-primary-reverse);
+    }
+
+    /* Info Banner */
+    .info-banner {
+      display: flex;
+      gap: 16px;
+      padding: 16px;
+      background: linear-gradient(135deg, #DAFDA0 0%, #FDFDA0 100%);
+      border-radius: 8px;
+      margin-bottom: 24px;
+    }
+
+    .info-banner-icon {
+      width: 24px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+
+    .info-banner-content {
+      flex: 1;
+    }
+
+    .info-banner-title {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--content-primary);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .info-banner-text {
+      font-size: 14px;
+      color: var(--content-secondary);
+      line-height: 21px;
+    }
+
+    /* Form Styles */
+    .form-section-title {
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--content-primary);
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .edit-link {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--content-primary);
+      text-decoration: underline;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .form-field {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .form-label {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--content-tertiary);
+    }
+
+    .form-input {
+      height: 48px;
+      padding: 12px 16px;
+      border: 1px solid var(--border-tertiary);
+      border-radius: 8px;
+      font-family: var(--font-family);
+      font-size: 14px;
+      color: var(--content-primary);
+      background: var(--bg-tertiary);
+      outline: none;
+    }
+
+    .form-input:focus {
+      border-color: var(--content-primary);
+    }
+
+    .form-input::placeholder {
+      color: var(--content-quartenary);
+    }
+
+    .form-input.filled {
+      background: var(--bg-secondary);
+    }
+
+    .form-select {
+      height: 48px;
+      padding: 12px 16px;
+      border: 1px solid var(--border-tertiary);
+      border-radius: 8px;
+      font-family: var(--font-family);
+      font-size: 14px;
+      color: var(--content-primary);
+      background: var(--bg-tertiary);
+      outline: none;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 6L8 10L12 6' stroke='%23535353' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+    }
+
+    .form-checkbox {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .form-checkbox input {
+      width: 20px;
+      height: 20px;
+      margin-top: 2px;
+      accent-color: var(--bg-primary-reverse);
+    }
+
+    .form-checkbox-label {
+      font-size: 14px;
+      color: var(--content-secondary);
+      line-height: 21px;
+    }
+
+    /* Packaging Kit Section */
+    .section-title {
+      font-size: 20px;
+      font-weight: 500;
+      color: var(--content-primary);
+      margin-bottom: 16px;
+    }
+
+    .packaging-images {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .packaging-image-main {
+      flex: 1;
+      height: 168px;
+      background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--content-tertiary);
+      font-size: 14px;
+    }
+
+    .packaging-image-small {
+      display: flex;
+      gap: 12px;
+    }
+
+    .packaging-image-thumb {
+      width: 168px;
+      height: 168px;
+      background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--content-tertiary);
+      font-size: 12px;
+    }
+
+    .packaging-description {
+      font-size: 14px;
+      color: var(--content-secondary);
+      line-height: 24px;
+      margin-bottom: 16px;
+    }
+
+    .packaging-feature {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .packaging-feature::before {
+      content: "•";
+      color: var(--content-primary);
+      font-weight: bold;
+    }
+
+    .link-text {
+      font-size: 14px;
+      color: var(--content-primary);
+      text-decoration: underline;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    /* Date Selection */
+    .date-description {
+      font-size: 14px;
+      color: var(--content-secondary);
+      line-height: 24px;
+      margin-bottom: 24px;
+    }
+
+    .time-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .time-label {
+      font-size: 14px;
+      color: var(--content-primary);
+      min-width: 40px;
+    }
+
+    .time-select {
+      width: 100px;
+    }
+
+    /* Summary Section */
+    .summary-section {
+      margin-bottom: 24px;
+    }
+
+    .summary-label {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--content-primary);
+      margin-bottom: 12px;
+    }
+
+    .summary-value {
+      font-size: 14px;
+      color: var(--content-secondary);
+      line-height: 24px;
+    }
+
+    .summary-divider {
+      height: 1px;
+      background: var(--border-tertiary);
+      margin: 24px 0;
+    }
+
+    .earnings-box {
+      background: var(--bg-secondary);
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .earnings-title {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--content-primary);
+      margin-bottom: 16px;
+    }
+
+    .earnings-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      font-size: 14px;
+    }
+
+    .earnings-row-label {
+      color: var(--content-secondary);
+    }
+
+    .earnings-row-value {
+      color: var(--content-primary);
+    }
+
+    .earnings-total {
+      display: flex;
+      justify-content: space-between;
+      padding-top: 16px;
+      border-top: 1px solid var(--border-tertiary);
+      margin-top: 8px;
+    }
+
+    .earnings-total-label {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--content-primary);
+    }
+
+    .earnings-total-value {
+      font-size: 20px;
+      font-weight: 500;
+      color: var(--content-primary);
+    }
+
+    .legal-text {
+      font-size: 12px;
+      color: var(--content-tertiary);
+      line-height: 18px;
+      margin-top: 24px;
+    }
+
+    /* Modal step visibility */
+    .modal-step {
+      display: none;
+    }
+
+    .modal-step.active {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="prototype-container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">buycycle</div>
+        <div class="sidebar-subtitle">Post-Transaction Shipping Flow</div>
+      </div>
+
+      <!-- Perspective Toggle -->
+      <div class="toggle-section">
+        <div class="toggle-label">View as</div>
+        <div class="toggle-buttons">
+          <button class="toggle-btn active" data-perspective="seller" onclick="switchPerspective('seller')">Seller</button>
+          <button class="toggle-btn" data-perspective="buyer" onclick="switchPerspective('buyer')">Buyer</button>
+        </div>
+      </div>
+
+      <!-- Shipping Type Toggle -->
+      <div class="toggle-section">
+        <div class="toggle-label">Shipping Type</div>
+        <div class="toggle-buttons">
+          <button class="toggle-btn active" data-type="managed" onclick="switchShippingType('managed')">Managed</button>
+          <button class="toggle-btn" data-type="unmanaged" onclick="switchShippingType('unmanaged')">Unmanaged</button>
+        </div>
+        <div class="shipping-type-info" id="shipping-type-info">
+          <div class="shipping-type-title">Managed Shipping</div>
+          <div class="shipping-type-desc">For bikes & high-value items. buycycle provides packaging materials and arranges carrier pickup at seller's doorstep.</div>
+        </div>
+      </div>
+
+      <!-- Steps Navigation -->
+      <div class="steps-nav">
+        <!-- MANAGED SHIPPING STEPS -->
+        <div id="managed-steps">
+          <div class="steps-section-title">Sale Confirmation</div>
+          <div class="step-item active" data-step="awaiting-sale" data-index="0" onclick="showStep('awaiting-sale')">
+            <div class="step-indicator">
+              <span class="step-number">1</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Awaiting Sale Confirmation</div>
+              <div class="step-description">48h to confirm or cancel</div>
+            </div>
+          </div>
+          <div class="step-item" data-step="sale-confirmed" data-index="1" onclick="showStep('sale-confirmed')">
+            <div class="step-indicator">
+              <span class="step-number">2</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Sale Confirmed</div>
+              <div class="step-description">Confirm payment info</div>
+            </div>
+          </div>
+          <div class="step-item" data-step="payment-info-confirmed" data-index="2" onclick="showStep('payment-info-confirmed')">
+            <div class="step-indicator">
+              <span class="step-number">3</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Payment Info Confirmed</div>
+              <div class="step-description">Ready for packaging</div>
+            </div>
+          </div>
+
+          <div class="steps-section-title">Packaging & Preparation</div>
+          <div class="step-item" data-step="packaging-preparation" data-index="-1" onclick="showStep('packaging-preparation')">
+            <div class="step-indicator">
+              <span class="step-number">-</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Packaging Preparation</div>
+              <div class="step-description">Preparing packaging materials</div>
+            </div>
+          </div>
+          <div class="step-item" data-step="packaging-shipped" data-index="3" onclick="showStep('packaging-shipped')">
+            <div class="step-indicator">
+              <span class="step-number">4</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Packaging Shipped</div>
+              <div class="step-description">Materials on the way</div>
+            </div>
+          </div>
+          <div class="step-item" data-step="packaging-delivered" data-index="4" onclick="showStep('packaging-delivered')">
+            <div class="step-indicator">
+              <span class="step-number">5</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Packaging Delivered</div>
+              <div class="step-description">Time to pack your bike</div>
+            </div>
+          </div>
+          <div class="step-item" data-step="packing" data-index="5" onclick="showStep('packing')">
+            <div class="step-indicator">
+              <span class="step-number">6</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Packing</div>
+              <div class="step-description">Follow instructions & upload photos</div>
+            </div>
+          </div>
+          <div class="step-item" data-step="order-packed" data-index="6" onclick="showStep('order-packed')">
+            <div class="step-indicator">
+              <span class="step-number">7</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Order Packed</div>
+              <div class="step-description">Print label & await pickup</div>
+            </div>
+          </div>
+
+          <div class="steps-section-title">Shipping & Delivery</div>
+          <div class="step-item" data-step="awaiting-pickup" data-index="7" onclick="showStep('awaiting-pickup')">
+            <div class="step-indicator">
+              <span class="step-number">8</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Awaiting Pickup</div>
+              <div class="step-description">Carrier coming today</div>
+            </div>
+          </div>
+          <div class="step-item" data-step="in-transit" data-index="8" onclick="showStep('in-transit')">
+            <div class="step-indicator">
+              <span class="step-number">9</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">In Transit</div>
+              <div class="step-description">On the way to buyer</div>
+            </div>
+          </div>
+          <div class="step-item" data-step="delivered" data-index="9" onclick="showStep('delivered')">
+            <div class="step-indicator">
+              <span class="step-number">10</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Delivered</div>
+              <div class="step-description">48h for buyer to confirm</div>
+            </div>
+          </div>
+          <div class="step-item" data-step="confirmed" data-index="10" onclick="showStep('confirmed')">
+            <div class="step-indicator">
+              <span class="step-number">11</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Confirmed by Buyer</div>
+              <div class="step-description">Payment released</div>
+            </div>
+          </div>
+          <div class="step-item" data-step="leave-review" data-index="-1" onclick="showStep('leave-review')">
+            <div class="step-indicator">
+              <span class="step-number">-</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Leave Review</div>
+              <div class="step-description">Rate your experience</div>
+            </div>
+          </div>
+          <div class="step-item" data-step="review-added" data-index="-1" onclick="showStep('review-added')">
+            <div class="step-indicator">
+              <span class="step-number">-</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Review Added</div>
+              <div class="step-description">Feedback submitted</div>
+            </div>
+          </div>
+
+          <div class="steps-section-title">Carrier Updates</div>
+          <div class="step-item" data-step="out-for-delivery" data-index="-1" onclick="showStep('out-for-delivery')">
+            <div class="step-indicator">
+              <span class="step-number">-</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Out for Delivery</div>
+              <div class="step-description">Carrier is delivering today</div>
+            </div>
+          </div>
+          <div class="step-item" data-step="at-post-office" data-index="-1" onclick="showStep('at-post-office')">
+            <div class="step-indicator">
+              <span class="step-number">-</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">At Postal Office</div>
+              <div class="step-description">Ready for pickup at parcel shop</div>
+            </div>
+          </div>
+
+          <div class="steps-section-title">Logistics Hub</div>
+          <div class="step-item" data-step="seller-to-hub" data-index="-1" onclick="showStep('seller-to-hub')">
+            <div class="step-indicator">
+              <span class="step-number">-</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Shipping to Hub</div>
+              <div class="step-description">On the way to logistics hub</div>
+            </div>
+          </div>
+          <div class="step-item" data-step="at-hub" data-index="-1" onclick="showStep('at-hub')">
+            <div class="step-indicator">
+              <span class="step-number">-</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">At Logistics Hub</div>
+              <div class="step-description">Being processed at hub</div>
+            </div>
+          </div>
+          <div class="step-item" data-step="hub-to-buyer" data-index="-1" onclick="showStep('hub-to-buyer')">
+            <div class="step-indicator">
+              <span class="step-number">-</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Hub to Buyer</div>
+              <div class="step-description">Shipped from hub to buyer</div>
+            </div>
+          </div>
+
+          <div class="steps-section-title">Delay Notifications</div>
+          <div class="step-item" data-step="delay-5day" data-index="-1" onclick="showStep('delay-5day')">
+            <div class="step-indicator">
+              <span class="step-number">-</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Shipping Update</div>
+              <div class="step-description">5-day transit update</div>
+            </div>
+          </div>
+          <div class="step-item" data-step="delay-10day" data-index="-1" onclick="showStep('delay-10day')">
+            <div class="step-indicator">
+              <span class="step-number">-</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Shipping Update: Delay</div>
+              <div class="step-description">10-day delay notification</div>
+            </div>
+          </div>
+
+          <div class="steps-section-title">Return Flow</div>
+          <div class="step-item" data-step="return-preparing" data-index="-1" onclick="showStep('return-preparing')">
+            <div class="step-indicator">
+              <span class="step-number">-</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Return Confirmed</div>
+              <div class="step-description">Preparing return shipment</div>
+            </div>
+          </div>
+          <div class="step-item" data-step="return-ready" data-index="-1" onclick="showStep('return-ready')">
+            <div class="step-indicator">
+              <span class="step-number">-</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Return Label Ready</div>
+              <div class="step-description">Shipping label available</div>
+            </div>
+          </div>
+          <div class="step-item" data-step="return-missed-pickup" data-index="-1" onclick="showStep('return-missed-pickup')">
+            <div class="step-indicator">
+              <span class="step-number">-</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Return Pickup Failed</div>
+              <div class="step-description">Pickup was unsuccessful</div>
+            </div>
+          </div>
+          <div class="step-item" data-step="return-in-transit" data-index="-1" onclick="showStep('return-in-transit')">
+            <div class="step-indicator">
+              <span class="step-number">-</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Return In Transit</div>
+              <div class="step-description">On the way back to seller</div>
+            </div>
+          </div>
+          <div class="step-item" data-step="return-in-transit-2leg-leg1" data-index="-1" onclick="showStep('return-in-transit-2leg-leg1')">
+            <div class="step-indicator">
+              <span class="step-number">-</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Return to Hub</div>
+              <div class="step-description">Going to logistics hub first</div>
+            </div>
+          </div>
+          <div class="step-item" data-step="return-in-transit-2leg-leg2" data-index="-1" onclick="showStep('return-in-transit-2leg-leg2')">
+            <div class="step-indicator">
+              <span class="step-number">-</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Return from Hub</div>
+              <div class="step-description">Processed, shipping to seller</div>
+            </div>
+          </div>
+          <div class="step-item" data-step="return-delivered" data-index="-1" onclick="showStep('return-delivered')">
+            <div class="step-indicator">
+              <span class="step-number">-</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Return Delivered</div>
+              <div class="step-description">Returned to seller</div>
+            </div>
+          </div>
+
+          <div class="steps-section-title">Lost Shipment</div>
+          <div class="step-item" data-step="lost-investigation" data-index="-1" onclick="showStep('lost-investigation')">
+            <div class="step-indicator">
+              <span class="step-number">-</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Investigation Started</div>
+              <div class="step-description">Carrier investigating location</div>
+            </div>
+          </div>
+          <div class="step-item" data-step="lost-found" data-index="-1" onclick="showStep('lost-found')">
+            <div class="step-indicator">
+              <span class="step-number">-</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Shipment Located</div>
+              <div class="step-description">Found and back in transit</div>
+            </div>
+          </div>
+          <div class="step-item" data-step="lost-refunded" data-index="-1" onclick="showStep('lost-refunded')">
+            <div class="step-indicator">
+              <span class="step-number">-</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Shipment Lost</div>
+              <div class="step-description">Declared lost, protected by buycycle</div>
+            </div>
+          </div>
+
+          <div class="steps-section-title">Unauthorized Return</div>
+          <div class="step-item" data-step="unauthorized-return" data-index="-1" onclick="showStep('unauthorized-return')">
+            <div class="step-indicator">
+              <span class="step-number">-</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Returning to Sender</div>
+              <div class="step-description">Carrier initiated return</div>
+            </div>
+          </div>
+
+          <div class="steps-section-title">Claims</div>
+          <div class="step-item" data-step="claim-opened" data-index="-1" onclick="showStep('claim-opened')">
+            <div class="step-indicator">
+              <span class="step-number">-</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Claim Opened</div>
+              <div class="step-description">Issue reported with order</div>
+            </div>
+          </div>
+          <div class="step-item" data-step="claim-completed" data-index="-1" onclick="showStep('claim-completed')">
+            <div class="step-indicator">
+              <span class="step-number">-</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Claim Completed</div>
+              <div class="step-description">Investigation concluded</div>
+            </div>
+          </div>
+          <div class="step-item" data-step="ce-contacts-seller" data-index="-1" onclick="showStep('ce-contacts-seller')">
+            <div class="step-indicator">
+              <span class="step-number">-</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">CE Contacts Seller</div>
+              <div class="step-description">Trying to reach seller</div>
+            </div>
+          </div>
+          <div class="step-item" data-step="claim-transaction-cancelled" data-index="-1" onclick="showStep('claim-transaction-cancelled')">
+            <div class="step-indicator">
+              <span class="step-number">-</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Transaction Cancelled</div>
+              <div class="step-description">Buyer refunded, shipments canceled</div>
+            </div>
+          </div>
+
+          <div class="steps-section-title">Delivery Issues</div>
+          <div class="step-item" data-step="failed-delivery" data-index="-1" onclick="showStep('failed-delivery')">
+            <div class="step-indicator">
+              <span class="step-number">-</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Delivery Unsuccessful</div>
+              <div class="step-description">Courier couldn't deliver</div>
+            </div>
+          </div>
+
+          <div class="steps-section-title">Failure States</div>
+          <div class="step-item failed" data-step="cancelled" data-index="-1" onclick="showStep('cancelled')">
+            <div class="step-indicator">
+              <span class="step-number">!</span>
+              <svg class="fail-icon" viewBox="0 0 14 14" fill="none"><path d="M3 3L11 11M11 3L3 11" stroke="#B91C1C" stroke-width="2" stroke-linecap="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Cancelled</div>
+              <div class="step-description">Sale cancelled or expired</div>
+            </div>
+          </div>
+          <div class="step-item failed" data-step="pickup-unsuccessful" data-index="-1" onclick="showStep('pickup-unsuccessful')">
+            <div class="step-indicator">
+              <span class="step-number">!</span>
+              <svg class="fail-icon" viewBox="0 0 14 14" fill="none"><path d="M3 3L11 11M11 3L3 11" stroke="#B91C1C" stroke-width="2" stroke-linecap="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Pickup Unsuccessful</div>
+              <div class="step-description">Carrier couldn't pick up</div>
+            </div>
+          </div>
+          <div class="step-item failed" data-step="packaging-delayed" data-index="-1" onclick="showStep('packaging-delayed')">
+            <div class="step-indicator">
+              <span class="step-number">!</span>
+              <svg class="fail-icon" viewBox="0 0 14 14" fill="none"><path d="M3 3L11 11M11 3L3 11" stroke="#B91C1C" stroke-width="2" stroke-linecap="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Packaging Delayed</div>
+              <div class="step-description">Materials not delivered in time</div>
+            </div>
+          </div>
+          <div class="step-item failed" data-step="sale-not-confirmed" data-index="-1" onclick="showStep('sale-not-confirmed')">
+            <div class="step-indicator">
+              <span class="step-number">!</span>
+              <svg class="fail-icon" viewBox="0 0 14 14" fill="none"><path d="M3 3L11 11M11 3L3 11" stroke="#B91C1C" stroke-width="2" stroke-linecap="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Sale Not Confirmed</div>
+              <div class="step-description">Sale expired, not confirmed</div>
+            </div>
+          </div>
+          <div class="step-item failed" data-step="packaging-delayed-24h" data-index="-1" onclick="showStep('packaging-delayed-24h')">
+            <div class="step-indicator">
+              <span class="step-number">!</span>
+              <svg class="fail-icon" viewBox="0 0 14 14" fill="none"><path d="M3 3L11 11M11 3L3 11" stroke="#B91C1C" stroke-width="2" stroke-linecap="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Packaging Delayed 24h</div>
+              <div class="step-description">Packaging not arrived before pickup</div>
+            </div>
+          </div>
+          <div class="step-item failed" data-step="packaging-rescheduled" data-index="-1" onclick="showStep('packaging-rescheduled')">
+            <div class="step-indicator">
+              <span class="step-number">!</span>
+              <svg class="fail-icon" viewBox="0 0 14 14" fill="none"><path d="M3 3L11 11M11 3L3 11" stroke="#B91C1C" stroke-width="2" stroke-linecap="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Packaging Rescheduled</div>
+              <div class="step-description">Pickup date rescheduled</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- UNMANAGED SHIPPING STEPS -->
+        <div id="unmanaged-steps" style="display: none;">
+          <div class="steps-section-title">Sale Confirmation</div>
+          <div class="step-item active" data-step="u-awaiting-sale" data-index="0" onclick="showStep('u-awaiting-sale')">
+            <div class="step-indicator">
+              <span class="step-number">1</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Awaiting Sale Confirmation</div>
+              <div class="step-description">48h to confirm or cancel</div>
+            </div>
+          </div>
+          <div class="step-item" data-step="u-sale-confirmed" data-index="1" onclick="showStep('u-sale-confirmed')">
+            <div class="step-indicator">
+              <span class="step-number">2</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Sale Confirmed</div>
+              <div class="step-description">Confirm payment info</div>
+            </div>
+          </div>
+          <div class="step-item" data-step="u-payment-info-confirmed" data-index="2" onclick="showStep('u-payment-info-confirmed')">
+            <div class="step-indicator">
+              <span class="step-number">3</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Payment Info Confirmed</div>
+              <div class="step-description">Download shipping label</div>
+            </div>
+          </div>
+
+          <div class="steps-section-title">Packing & Shipping</div>
+          <div class="step-item" data-step="u-label-downloaded" data-index="3" onclick="showStep('u-label-downloaded')">
+            <div class="step-indicator">
+              <span class="step-number">4</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Label Downloaded</div>
+              <div class="step-description">Pack and bring to drop-off</div>
+            </div>
+          </div>
+          <div class="step-item" data-step="u-packing" data-index="4" onclick="showStep('u-packing')">
+            <div class="step-indicator">
+              <span class="step-number">5</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Packing</div>
+              <div class="step-description">Pack securely for shipping</div>
+            </div>
+          </div>
+          <div class="step-item" data-step="u-in-transit" data-index="5" onclick="showStep('u-in-transit')">
+            <div class="step-indicator">
+              <span class="step-number">6</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">In Transit</div>
+              <div class="step-description">On the way to buyer</div>
+            </div>
+          </div>
+
+          <div class="steps-section-title">Delivery & Completion</div>
+          <div class="step-item" data-step="u-delivered" data-index="6" onclick="showStep('u-delivered')">
+            <div class="step-indicator">
+              <span class="step-number">7</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Delivered</div>
+              <div class="step-description">48h for buyer to confirm</div>
+            </div>
+          </div>
+          <div class="step-item" data-step="u-confirmed" data-index="7" onclick="showStep('u-confirmed')">
+            <div class="step-indicator">
+              <span class="step-number">8</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Confirmed by Buyer</div>
+              <div class="step-description">Payment released</div>
+            </div>
+          </div>
+
+          <div class="steps-section-title">Carrier Updates</div>
+          <div class="step-item" data-step="u-out-for-delivery" data-index="-1" onclick="showStep('u-out-for-delivery')">
+            <div class="step-indicator">
+              <span class="step-number">-</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Out for Delivery</div>
+              <div class="step-description">Carrier is delivering today</div>
+            </div>
+          </div>
+          <div class="step-item" data-step="u-at-post-office" data-index="-1" onclick="showStep('u-at-post-office')">
+            <div class="step-indicator">
+              <span class="step-number">-</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">At Postal Office</div>
+              <div class="step-description">Ready for pickup at parcel shop</div>
+            </div>
+          </div>
+
+          <div class="steps-section-title">Delay Notifications</div>
+          <div class="step-item" data-step="u-delay-5day" data-index="-1" onclick="showStep('u-delay-5day')">
+            <div class="step-indicator">
+              <span class="step-number">-</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Shipping Update</div>
+              <div class="step-description">5-day transit update</div>
+            </div>
+          </div>
+
+          <div class="steps-section-title">Return Flow</div>
+          <div class="step-item" data-step="u-return-preparing" data-index="-1" onclick="showStep('u-return-preparing')">
+            <div class="step-indicator">
+              <span class="step-number">-</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Return Preparing</div>
+              <div class="step-description">Preparing return shipment</div>
+            </div>
+          </div>
+          <div class="step-item" data-step="u-return-ready" data-index="-1" onclick="showStep('u-return-ready')">
+            <div class="step-indicator">
+              <span class="step-number">-</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Return Label Ready</div>
+              <div class="step-description">Shipping label available</div>
+            </div>
+          </div>
+          <div class="step-item" data-step="u-return-missed-pickup" data-index="-1" onclick="showStep('u-return-missed-pickup')">
+            <div class="step-indicator">
+              <span class="step-number">-</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Return Pickup Failed</div>
+              <div class="step-description">Pickup was unsuccessful</div>
+            </div>
+          </div>
+          <div class="step-item" data-step="u-return-in-transit" data-index="-1" onclick="showStep('u-return-in-transit')">
+            <div class="step-indicator">
+              <span class="step-number">-</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Return In Transit</div>
+              <div class="step-description">On the way back to seller</div>
+            </div>
+          </div>
+          <div class="step-item" data-step="u-return-in-transit-2leg-leg1" data-index="-1" onclick="showStep('u-return-in-transit-2leg-leg1')">
+            <div class="step-indicator">
+              <span class="step-number">-</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Return to Hub</div>
+              <div class="step-description">Going to logistics hub first</div>
+            </div>
+          </div>
+          <div class="step-item" data-step="u-return-in-transit-2leg-leg2" data-index="-1" onclick="showStep('u-return-in-transit-2leg-leg2')">
+            <div class="step-indicator">
+              <span class="step-number">-</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Return from Hub</div>
+              <div class="step-description">Processed, shipping to seller</div>
+            </div>
+          </div>
+          <div class="step-item" data-step="u-return-delivered" data-index="-1" onclick="showStep('u-return-delivered')">
+            <div class="step-indicator">
+              <span class="step-number">-</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Return Delivered</div>
+              <div class="step-description">Returned to seller</div>
+            </div>
+          </div>
+
+          <div class="steps-section-title">Lost Shipment</div>
+          <div class="step-item" data-step="u-lost-bike-investigation" data-index="-1" onclick="showStep('u-lost-bike-investigation')">
+            <div class="step-indicator">
+              <span class="step-number">-</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Investigation Started</div>
+              <div class="step-description">Carrier investigating location</div>
+            </div>
+          </div>
+          <div class="step-item" data-step="u-lost-bike-found" data-index="-1" onclick="showStep('u-lost-bike-found')">
+            <div class="step-indicator">
+              <span class="step-number">-</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Shipment Located</div>
+              <div class="step-description">Found and back in transit</div>
+            </div>
+          </div>
+          <div class="step-item" data-step="u-lost-bike-refunded" data-index="-1" onclick="showStep('u-lost-bike-refunded')">
+            <div class="step-indicator">
+              <span class="step-number">-</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Shipment Lost</div>
+              <div class="step-description">Declared lost, protected by buycycle</div>
+            </div>
+          </div>
+
+          <div class="steps-section-title">Unauthorized Return</div>
+          <div class="step-item" data-step="u-unauthorized-return" data-index="-1" onclick="showStep('u-unauthorized-return')">
+            <div class="step-indicator">
+              <span class="step-number">-</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Returning to Sender</div>
+              <div class="step-description">Carrier initiated return</div>
+            </div>
+          </div>
+
+          <div class="steps-section-title">Claims</div>
+          <div class="step-item" data-step="u-claim-opened" data-index="-1" onclick="showStep('u-claim-opened')">
+            <div class="step-indicator">
+              <span class="step-number">-</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Claim Opened</div>
+              <div class="step-description">Issue reported with order</div>
+            </div>
+          </div>
+          <div class="step-item" data-step="u-claim-completed" data-index="-1" onclick="showStep('u-claim-completed')">
+            <div class="step-indicator">
+              <span class="step-number">-</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Claim Completed</div>
+              <div class="step-description">Investigation concluded</div>
+            </div>
+          </div>
+          <div class="step-item" data-step="u-ce-contacts-seller" data-index="-1" onclick="showStep('u-ce-contacts-seller')">
+            <div class="step-indicator">
+              <span class="step-number">-</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">CE Contacts Seller</div>
+              <div class="step-description">Trying to reach seller</div>
+            </div>
+          </div>
+          <div class="step-item" data-step="u-claim-transaction-cancelled" data-index="-1" onclick="showStep('u-claim-transaction-cancelled')">
+            <div class="step-indicator">
+              <span class="step-number">-</span>
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Transaction Cancelled</div>
+              <div class="step-description">Buyer refunded, shipments canceled</div>
+            </div>
+          </div>
+
+          <div class="steps-section-title">Failure States</div>
+          <div class="step-item failed" data-step="u-cancelled" data-index="-1" onclick="showStep('u-cancelled')">
+            <div class="step-indicator">
+              <span class="step-number">!</span>
+              <svg class="fail-icon" viewBox="0 0 14 14" fill="none"><path d="M3 3L11 11M11 3L3 11" stroke="#B91C1C" stroke-width="2" stroke-linecap="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Cancelled</div>
+              <div class="step-description">Sale cancelled or expired</div>
+            </div>
+          </div>
+          <div class="step-item failed" data-step="u-failed" data-index="-1" onclick="showStep('u-failed')">
+            <div class="step-indicator">
+              <span class="step-number">!</span>
+              <svg class="fail-icon" viewBox="0 0 14 14" fill="none"><path d="M3 3L11 11M11 3L3 11" stroke="#B91C1C" stroke-width="2" stroke-linecap="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Delivery Failed</div>
+              <div class="step-description">Delivery unsuccessful</div>
+            </div>
+          </div>
+          <div class="step-item failed" data-step="u-sale-not-confirmed" data-index="-1" onclick="showStep('u-sale-not-confirmed')">
+            <div class="step-indicator">
+              <span class="step-number">!</span>
+              <svg class="fail-icon" viewBox="0 0 14 14" fill="none"><path d="M3 3L11 11M11 3L3 11" stroke="#B91C1C" stroke-width="2" stroke-linecap="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Sale Not Confirmed</div>
+              <div class="step-description">Sale expired, not confirmed</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="chat-container">
+        <!-- Header -->
+        <div class="chat-header">
+          <div class="chat-header-content">
+            <div class="product-image-container">
+              <img class="product-image" src="https://www.figma.com/api/mcp/asset/871387d7-ac91-49c7-8a4c-869195d61471" alt="Product" onerror="this.style.background='#EAEAEA'">
+              <img class="user-avatar-small" src="https://www.figma.com/api/mcp/asset/1346fbaa-08aa-4bda-a4f2-4c04c49cc00e" alt="User" onerror="this.style.background='#EAEAEA'">
+            </div>
+            <div class="product-info">
+              <h2 id="product-name">Spectral CFR 9.0 SL</h2>
+              <span class="price" id="product-price">€7.300</span>
+            </div>
+          </div>
+          <div class="options-icon">
+            <svg width="20" height="4" viewBox="0 0 20 4" fill="none">
+              <circle cx="2" cy="2" r="2" fill="#090907"/>
+              <circle cx="10" cy="2" r="2" fill="#090907"/>
+              <circle cx="18" cy="2" r="2" fill="#090907"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- View Order Progress -->
+        <div class="order-progress-bar">
+          <span class="order-progress-text">View order progress</span>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M9 18L15 12L9 6" stroke="#090907" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+
+        <!-- Chat Body with Admin Messages -->
+        <div class="chat-body">
+          <!-- Protection Banner -->
+          <div class="protection-banner">
+            <div class="protection-icon">
+              <svg width="18" height="20" viewBox="0 0 18 20" fill="none">
+                <path d="M9 0L0 3.63636V9.09091C0 14.1409 3.843 18.8636 9 20C14.157 18.8636 18 14.1409 18 9.09091V3.63636L9 0ZM9 9.99091H16.2C15.723 13.7318 12.822 17.1 9 17.9909V10H1.8V4.58182L9 1.87273V9.99091Z" fill="#090907"/>
+              </svg>
+            </div>
+            <span class="protection-text" id="protection-text">buycycle's seller protection guarantees you'll be paid securely. Learn more.</span>
+          </div>
+
+          <!-- Admin Messages Container - will show history -->
+          <div class="admin-messages-container" id="admin-messages">
+            <!-- Content will be dynamically generated -->
+          </div>
+        </div>
+
+        <!-- Comment Input -->
+        <div class="comment-section">
+          <div class="comment-input-container">
+            <div class="input-wrapper">
+              <input type="text" class="message-input" placeholder="Your message...">
+            </div>
+            <button class="send-button">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M4 12L20 12M20 12L14 6M20 12L14 18" stroke="#090907" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirm Sale Modal -->
+  <div class="modal-overlay" id="confirm-sale-modal">
+    <div class="modal-container">
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <button class="modal-back" onclick="handleModalBack()">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Confirm sale
+        </button>
+      </div>
+
+      <!-- Modal Content -->
+      <div class="modal-content">
+        <!-- Step 1: Seller Details & Pick-up Location -->
+        <div class="modal-step active" data-step="1">
+          <div class="progress-bar">
+            <div class="progress-step active"></div>
+            <div class="progress-step"></div>
+            <div class="progress-step"></div>
+          </div>
+
+          <div class="info-banner">
+            <div class="info-banner-icon">
+              <svg width="24" height="20" viewBox="0 0 24 20" fill="none">
+                <path d="M20 0H4C1.79 0 0 1.79 0 4V16C0 18.21 1.79 20 4 20H20C22.21 20 24 18.21 24 16V4C24 1.79 22.21 0 20 0ZM20 16H4V8H20V16ZM20 4H4V2H20V4Z" fill="#92400E"/>
+              </svg>
+            </div>
+            <div class="info-banner-content">
+              <div class="info-banner-title">The buyer paid for the delivery!</div>
+              <div class="info-banner-text">We'll handle pickup and delivery with trusted carriers, and provide you with a shipping label—just let us know where and when to pick up the order.</div>
+            </div>
+          </div>
+
+          <div class="form-section-title">
+            Your details and pick-up location
+          </div>
+
+          <div class="form-row">
+            <div class="form-field">
+              <label class="form-label">First name</label>
+              <input type="text" class="form-input filled" value="Jonas" placeholder="First name">
+            </div>
+            <div class="form-field">
+              <label class="form-label">Last name</label>
+              <input type="text" class="form-input filled" value="Jaeger" placeholder="Last name">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-field">
+              <label class="form-label">Company name (optional)</label>
+              <input type="text" class="form-input" placeholder="Company name">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-field">
+              <label class="form-label">Phone number</label>
+              <div style="display: flex; gap: 8px;">
+                <select class="form-select" style="width: 100px;">
+                  <option>+49</option>
+                  <option>+1</option>
+                  <option>+44</option>
+                </select>
+                <input type="tel" class="form-input filled" value="176 555 1234" placeholder="Phone number" style="flex: 1;">
+              </div>
+            </div>
+            <div class="form-field">
+              <label class="form-label">Country</label>
+              <select class="form-select">
+                <option>Germany</option>
+                <option>Austria</option>
+                <option>Switzerland</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-field">
+              <label class="form-label">Address Search</label>
+              <input type="text" class="form-input filled" value="Atelierstrasse 12, 80000 Munich" placeholder="Start typing your address...">
+            </div>
+          </div>
+
+          <div class="form-checkbox">
+            <input type="checkbox" id="save-address" checked>
+            <label for="save-address" class="form-checkbox-label">Save this address for future orders</label>
+          </div>
+        </div>
+
+        <!-- Step 2: Packaging Kit -->
+        <div class="modal-step" data-step="2">
+          <div class="progress-bar">
+            <div class="progress-step completed"></div>
+            <div class="progress-step active"></div>
+            <div class="progress-step"></div>
+          </div>
+
+          <div class="section-title">Free buycycle's packaging kit</div>
+
+          <div class="packaging-images">
+            <div class="packaging-image-main">
+              <span>📦 Packaging Kit Image</span>
+            </div>
+            <div class="packaging-image-small">
+              <div class="packaging-image-thumb">📦</div>
+              <div class="packaging-image-thumb">📦</div>
+            </div>
+          </div>
+
+          <div class="packaging-description">
+            To ensure safe and secure shipping, we'll ship buycycle's packaging to you at no cost, within 3 to 5 business days. Track its delivery after finishing these steps.
+          </div>
+
+          <div class="packaging-description">
+            <strong>All-in-one protection kit:</strong> Includes a sturdy bike box, axle supports, wheel and cassette protectors, seatpost stabiliser, frame wraps, and an accessories box.
+          </div>
+
+          <div class="packaging-description">
+            <strong>TV-style packaging:</strong> Looks like a TV box to signal fragility—carriers handle it with extra care.
+          </div>
+
+          <a class="link-text">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            How to pack your bike for transport
+          </a>
+        </div>
+
+        <!-- Step 3: Pick-up Date -->
+        <div class="modal-step" data-step="3">
+          <div class="progress-bar">
+            <div class="progress-step completed"></div>
+            <div class="progress-step completed"></div>
+            <div class="progress-step active"></div>
+          </div>
+
+          <div class="section-title">Set a pick-up date</div>
+
+          <div class="date-description">
+            The order will be picked up at your doorstep. Please choose a date and time window from the options provided by the carrier, and ensure someone is available to hand it over.
+          </div>
+
+          <div class="form-field">
+            <label class="form-label">Select a date</label>
+            <select class="form-select" id="pickup-date">
+              <option value="">Select a date</option>
+              <option value="2025-01-24">Friday, 24 January 2025</option>
+              <option value="2025-01-25">Saturday, 25 January 2025</option>
+              <option value="2025-01-27">Monday, 27 January 2025</option>
+              <option value="2025-01-28">Tuesday, 28 January 2025</option>
+            </select>
+          </div>
+
+          <div class="time-row">
+            <span class="time-label">From:</span>
+            <select class="form-select time-select" id="pickup-time-from">
+              <option value="09:00">09:00</option>
+              <option value="10:00">10:00</option>
+              <option value="11:00">11:00</option>
+              <option value="12:00" selected>12:00</option>
+              <option value="13:00">13:00</option>
+              <option value="14:00">14:00</option>
+            </select>
+            <span class="time-label">To:</span>
+            <select class="form-select time-select" id="pickup-time-to">
+              <option value="14:00">14:00</option>
+              <option value="15:00">15:00</option>
+              <option value="16:00" selected>16:00</option>
+              <option value="17:00">17:00</option>
+              <option value="18:00">18:00</option>
+            </select>
+          </div>
+
+          <div class="form-checkbox" style="margin-top: 24px;">
+            <input type="checkbox" id="confirm-availability" checked>
+            <label for="confirm-availability" class="form-checkbox-label">I confirm that someone will be available at the pick-up location during the selected time window.</label>
+          </div>
+        </div>
+
+        <!-- Step 4: Summary -->
+        <div class="modal-step" data-step="4">
+          <div class="progress-bar">
+            <div class="progress-step completed"></div>
+            <div class="progress-step completed"></div>
+            <div class="progress-step completed"></div>
+          </div>
+
+          <div class="section-title">Summary</div>
+
+          <div class="summary-section">
+            <div class="summary-label">Order pick-up location:</div>
+            <div class="summary-value">
+              Jonas Jaeger<br>
+              Atelierstrasse 12<br>
+              80000 Munich, Germany
+            </div>
+          </div>
+
+          <div class="summary-section">
+            <div class="summary-label">Order pick-up date:</div>
+            <div class="summary-value" id="summary-date">24 January 2025, from 12:00 to 16:00</div>
+          </div>
+
+          <div class="summary-section">
+            <div class="summary-label">Packaging:</div>
+            <div class="summary-value">Buycycle's packaging will be delivered to your address within 3 to 5 business days.</div>
+          </div>
+
+          <div class="earnings-box">
+            <div class="earnings-title">Your earnings</div>
+            <div class="earnings-row">
+              <span class="earnings-row-label">Sale price</span>
+              <span class="earnings-row-value">€7,300</span>
+            </div>
+            <div class="earnings-row">
+              <span class="earnings-row-label">buycycle commission</span>
+              <span class="earnings-row-value">-€365</span>
+            </div>
+            <div class="earnings-row">
+              <span class="earnings-row-label">Buycycle fee (4.9%)</span>
+              <span class="earnings-row-value">-€191</span>
+            </div>
+            <div class="earnings-total">
+              <span class="earnings-total-label">You receive</span>
+              <span class="earnings-total-value">€6,744</span>
+            </div>
+          </div>
+
+          <div class="legal-text">
+            <strong>By selling on buycycle</strong>, you agree that buycycle will manage the payment, and hold the purchase amount, minus our commission, until confirmation that the buyer has received the order.
+            <br><br>
+            If the order has not been confirmed as received by the buyer within 14 days of the confirmed delivery date, the order will automatically be considered as confirmed and the amount will be transferred to your account.
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+        <button class="btn-primary" style="width: 100%; height: 48px;" onclick="handleModalNext()" id="modal-cta">
+          Continue to packaging
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // State
+    let currentPerspective = 'seller';
+    let currentShippingType = 'managed';
+    let currentStep = 'awaiting-sale';
+    let currentStepIndex = 0;
+    let modalCurrentStep = 1;
+
+    // Modal CTA text for each step
+    const modalCtaText = {
+      1: 'Continue to packaging',
+      2: 'Continue to pick-up date',
+      3: 'Confirm',
+      4: 'Confirm details'
+    };
+
+    // Modal functions
+    function openConfirmSaleModal() {
+      modalCurrentStep = 1;
+      updateModalStep();
+      document.getElementById('confirm-sale-modal').classList.add('active');
+    }
+
+    function closeConfirmSaleModal() {
+      document.getElementById('confirm-sale-modal').classList.remove('active');
+    }
+
+    function handleModalBack() {
+      if (modalCurrentStep > 1) {
+        modalCurrentStep--;
+        updateModalStep();
+      } else {
+        closeConfirmSaleModal();
+      }
+    }
+
+    function handleModalNext() {
+      if (modalCurrentStep < 4) {
+        modalCurrentStep++;
+        updateModalStep();
+      } else {
+        // Final step - confirm and close modal, advance to next shipping step
+        closeConfirmSaleModal();
+        showStep('sale-confirmed');
+      }
+    }
+
+    function updateModalStep() {
+      // Hide all steps
+      document.querySelectorAll('.modal-step').forEach(step => {
+        step.classList.remove('active');
+      });
+
+      // Show current step
+      const currentStepEl = document.querySelector(`.modal-step[data-step="${modalCurrentStep}"]`);
+      if (currentStepEl) {
+        currentStepEl.classList.add('active');
+      }
+
+      // Update CTA text
+      const ctaBtn = document.getElementById('modal-cta');
+      ctaBtn.innerHTML = modalCtaText[modalCurrentStep] + (modalCurrentStep < 4 ?
+        ` <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>` :
+        ` <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13.3 4.3L6 11.6L2.7 8.3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`);
+
+      // Update summary date if on step 4
+      if (modalCurrentStep === 4) {
+        updateSummaryDate();
+      }
+    }
+
+    function updateSummaryDate() {
+      const dateSelect = document.getElementById('pickup-date');
+      const timeFrom = document.getElementById('pickup-time-from');
+      const timeTo = document.getElementById('pickup-time-to');
+
+      let dateText = '24 January 2025';
+      if (dateSelect && dateSelect.value) {
+        const date = new Date(dateSelect.value);
+        const options = { day: 'numeric', month: 'long', year: 'numeric' };
+        dateText = date.toLocaleDateString('en-GB', options);
+      }
+
+      const fromTime = timeFrom ? timeFrom.value : '12:00';
+      const toTime = timeTo ? timeTo.value : '16:00';
+
+      const summaryDateEl = document.getElementById('summary-date');
+      if (summaryDateEl) {
+        summaryDateEl.textContent = `${dateText}, from ${fromTime} to ${toTime}`;
+      }
+    }
+
+    // Step order for building history
+    const managedStepOrder = [
+      'awaiting-sale', 'sale-confirmed', 'payment-info-confirmed',
+      'packaging-shipped', 'packaging-delivered', 'packing', 'order-packed',
+      'awaiting-pickup', 'in-transit', 'delivered', 'confirmed'
+    ];
+
+    const unmanagedStepOrder = [
+      'u-awaiting-sale', 'u-sale-confirmed', 'u-payment-info-confirmed',
+      'u-label-downloaded', 'u-packing', 'u-in-transit', 'u-delivered', 'u-confirmed'
+    ];
+
+    // Timestamps for each step (simulated)
+    const stepTimestamps = {
+      0: '14:58',
+      1: '14:58',
+      2: '14:58',
+      3: '15:12',
+      4: '16:30',
+      5: '17:45',
+      6: '18:20',
+      7: '09:00',
+      8: '10:34',
+      9: '11:45',
+      10: '12:00'
+    };
+
+    // Status content database - Heading + Explanation Text only
+    const statusContent = {
+      // ==================== MANAGED SHIPPING ====================
+      managed: {
+        'awaiting-sale': {
+          seller: {
+            title: 'Paid! Confirm the order pick up address and date by [DATE]',
+            body: 'Congrats! The buyer has paid, and we\'re securely holding the funds until they receive the order. Confirm the pickup address and date in time and we\'ll ship the packaging to you. If not done in time, the sale will be cancelled.',
+            actions: [
+              { type: 'primary', text: 'Confirm pick up address and date' }
+            ]
+          },
+          buyer: {
+            title: 'Paid',
+            body: 'Congrats! The seller has 48 hours to confirm the pickup date and location, so we can send the packaging. If they don\'t do it in time, the sale will be canceled automatically and you\'ll get a full refund. Your money stays safe with us until the order is in your hands.',
+            actions: []
+          }
+        },
+        'sale-confirmed': {
+          seller: {
+            title: 'Details confirmed.',
+            body: 'Your order will be collected on [DATE], from [HOURS].',
+            actions: []
+          },
+          buyer: {
+            title: 'Purchase confirmed',
+            body: 'We\'re sending buycycle\'s packaging to the seller so they can prepare your order for shipping.',
+            actions: []
+          }
+        },
+        'payment-info-confirmed': {
+          seller: {
+            title: 'Payment information saved',
+            body: 'Your updated payment details have been saved.',
+            actions: []
+          },
+          buyer: {
+            title: 'Purchase confirmed',
+            body: 'We\'re sending buycycle\'s packaging to the seller so they can prepare your order for shipping.',
+            actions: []
+          }
+        },
+        'packaging-shipped': {
+          seller: {
+            title: 'Packaging shipped',
+            body: 'Once delivered, we\'ll need some pictures of your packing process.',
+            actions: [
+              { type: 'secondary', text: 'Track packaging' }
+            ]
+          },
+          buyer: {
+            title: 'Packaging shipped',
+            body: 'Packaging on its way to the seller.',
+            actions: [
+              { type: 'secondary', text: 'Track packaging' }
+            ]
+          }
+        },
+        'packaging-delivered': {
+          seller: {
+            title: 'Packaging delivered',
+            body: '[Date]',
+            actions: []
+          },
+          buyer: {
+            title: 'Packaging delivered',
+            body: '[Date]',
+            actions: []
+          }
+        },
+        'packing': {
+          seller: {
+            title: 'Pack the order and get your shipping label.',
+            body: 'Proper packing is key! Follow the instructions to secure your order. Finish packing the order to get your shipping label.',
+            actions: [
+              { type: 'primary', text: 'Pack the order' }
+            ]
+          },
+          buyer: {
+            title: 'Order packing',
+            body: 'The seller is packing the order.',
+            actions: []
+          }
+        },
+        'order-packed': {
+          seller: {
+            title: 'Order packed!',
+            body: 'Order pick-up is scheduled on 24.January 2025, from 12:00 to 16:00.',
+            actions: []
+          },
+          buyer: {
+            title: 'Order packed!',
+            body: 'Order pick-up is scheduled on 24.January 2025, from 12:00 to 16:00.',
+            actions: []
+          }
+        },
+        'awaiting-pickup': {
+          seller: {
+            title: 'Print the shipping label',
+            body: 'Last step before shipping.',
+            actions: [
+              { type: 'secondary', text: 'Print shipping label' }
+            ]
+          },
+          buyer: {
+            title: 'Order packed!',
+            body: 'Order pick-up is scheduled on 24.January 2025, from 12:00 to 16:00.',
+            actions: []
+          }
+        },
+        'in-transit': {
+          seller: {
+            title: 'Order is on its way!',
+            body: 'The order was successfully shipped. Track the shipment below once tracking details are available.',
+            actions: [
+              { type: 'secondary', text: 'Track shipment' }
+            ]
+          },
+          buyer: {
+            title: 'Order is on its way!',
+            body: 'The order was successfully shipped. Track the shipment below once tracking details are available. Here is what you should do when receiving your order.',
+            actions: [
+              { type: 'primary', text: 'I already received my order' },
+              { type: 'secondary', text: 'Track shipment' }
+            ]
+          }
+        },
+        'delivered': {
+          seller: {
+            title: 'Order delivered',
+            body: 'The buyer has until [date] to review the order and confirm that everything is as advertised.',
+            actions: []
+          },
+          buyer: {
+            title: 'Order delivered. Check it by [date]',
+            body: 'Make sure your order matches the description. If there\'s a problem, file a buyer protection case before this deadline to stay protected under our Buyer Protection Policy.',
+            actions: [
+              { type: 'primary', text: 'Everything is ok' }
+            ]
+          }
+        },
+        'confirmed': {
+          seller: {
+            title: 'Order completed',
+            body: 'Thank you for selling on buycycle!',
+            actions: [
+              { type: 'primary', text: 'Get paid' }
+            ]
+          },
+          buyer: {
+            title: 'Order completed',
+            body: 'Thank you for choosing buycycle!',
+            actions: [
+              { type: 'primary', text: 'List an item' }
+            ]
+          }
+        },
+        'cancelled': {
+          seller: {
+            title: 'Sale cancelled',
+            body: 'You\'ve cancelled the sale.',
+            actions: []
+          },
+          buyer: {
+            title: 'Sale cancelled',
+            body: 'Unfortunately, the sale was cancelled. We\'ve refunded you in full.',
+            actions: []
+          }
+        },
+        'pickup-unsuccessful': {
+          seller: {
+            title: 'Pick up unsuccessful',
+            body: 'Please select a new pick up date.',
+            actions: [
+              { type: 'primary', text: 'Schedule new pick-up date' }
+            ]
+          },
+          buyer: {
+            title: 'Pick up unsuccessful.',
+            body: 'The seller is scheduling a new pickup date. We will update the order progress once confirmed.',
+            actions: []
+          }
+        },
+        'packaging-delayed': {
+          seller: {
+            title: 'Packaging delayed.',
+            body: 'Schedule a new order pick-up date.',
+            actions: [
+              { type: 'primary', text: 'Reschedule order pickup' }
+            ]
+          },
+          buyer: {
+            title: 'Packaging delayed',
+            body: 'The seller is scheduling a new order pick-up date.',
+            actions: []
+          }
+        },
+        'failed-delivery': {
+          seller: {
+            title: 'Delivery unsuccessful',
+            body: 'The courier couldn\'t deliver the order to the buyer. They\'ve been informed and can check their shipment tracking for the next steps.',
+            actions: []
+          },
+          buyer: {
+            title: 'Delivery unsuccessful',
+            body: 'The courier couldn\'t deliver your order. Check your shipment tracking above for the next steps.',
+            actions: []
+          }
+        },
+        // ==================== CARRIER UPDATES ====================
+        'out-for-delivery': {
+          seller: {
+            title: 'Carrier Update: Out for delivery',
+            body: 'The carrier has informed us that the order is out for delivery to the buyer. Check the tracking link for more details.',
+            actions: []
+          },
+          buyer: {
+            title: 'Carrier Update: Delivery today',
+            body: 'The carrier has informed us that your order is out for delivery. Please check the tracking link below for more details',
+            actions: []
+          }
+        },
+        'at-post-office': {
+          seller: {
+            title: 'Carrier Update: At Postal Office',
+            body: 'The shipment was redirected to a parcel shop and is ready for pickup. The buyer has to pick up the order within the holding period.',
+            actions: []
+          },
+          buyer: {
+            title: 'Carrier Update: At Postal Office',
+            body: 'The shipment was redirected to a parcel shop and is ready for pickup. Please check the tracking link below for further details.',
+            actions: []
+          }
+        },
+        // ==================== LOGISTICS HUB ====================
+        'seller-to-hub': {
+          seller: {
+            title: 'Shipping to Logistics Hub',
+            body: 'The order is on its way to our logistics hub for a planned stop before being forwarded to the buyer, where also a new tracking link will be added once available.',
+            actions: []
+          },
+          buyer: {
+            title: 'Shipping to Logistics Hub',
+            body: 'The order is on its way to our logistics hub for a planned stop before being forwarded to you. A new tracking link will be added once it\'s on the way to you.',
+            actions: []
+          }
+        },
+        'at-hub': {
+          seller: {
+            title: 'At Logistics Hub',
+            body: 'The shipment has arrived at the logistics hub and is being processed. A new tracking link will be shared here in the chat soon.',
+            actions: []
+          },
+          buyer: {
+            title: 'At Logistics Hub',
+            body: 'Your order has arrived at the logistics hub and is being processed. A new tracking link will be shared here in the chat soon.',
+            actions: []
+          }
+        },
+        'hub-to-buyer': {
+          seller: {
+            title: 'On the way to buyer',
+            body: 'The shipment was successfully processed at the logistics hub and is now being shipped to the buyer. New tracking link added below.',
+            actions: []
+          },
+          buyer: {
+            title: 'On the way to you!',
+            body: 'Your order was successfully processed at the logistics hub and is now being shipped to you. The new tracking link was added below.',
+            actions: []
+          }
+        },
+        // ==================== DELAY NOTIFICATIONS ====================
+        'delay-5day': {
+          seller: {
+            title: 'Shipping Update',
+            body: 'The shipment is still in transit and on the way to the buyer as planned. For more details, please check the tracking link below',
+            actions: []
+          },
+          buyer: {
+            title: 'Shipping Update',
+            body: 'The order is still in transit and on the way to you as planned. For more details, please check the tracking link below',
+            actions: []
+          }
+        },
+        'delay-10day': {
+          seller: {
+            title: 'Shipping Update: Delay',
+            body: 'The shipment is experiencing a delivery delay. Our support team is already looking into this and will reach out soon.',
+            actions: []
+          },
+          buyer: {
+            title: 'Shipping Update: Delay',
+            body: 'Your order is experiencing a delivery delay. Our support team is already looking into this and will reach out soon.',
+            actions: []
+          }
+        },
+        // ==================== RETURN FLOW ====================
+        'return-preparing': {
+          seller: {
+            title: 'Return announcement',
+            body: 'Your return request has been confirmed. We are preparing the shipment now, you will receive an update via email once the return shipping label is ready.',
+            actions: []
+          },
+          buyer: {
+            title: 'Return announcement',
+            body: 'The order will be returned. Once the shipment is on the way back, we will share an update with you here. If you got any questions, feel free to reply to the last email from our support team.',
+            actions: []
+          }
+        },
+        'return-ready': {
+          seller: {
+            title: 'Return: Shipping Label Ready',
+            body: 'The return shipping label has been sent to the buyer. You\'ll be notified once the return is shipped.',
+            actions: []
+          },
+          buyer: {
+            title: 'Return: Shipping label ready',
+            body: 'The shipping label is ready, and you will receive it via email shortly. Then, please drop the parcel off at a carrier access point.',
+            actions: []
+          }
+        },
+        'return-missed-pickup': {
+          seller: {
+            title: 'Return Update: Pickup Unsuccessful',
+            body: 'The collection from the buyer was unsuccessful. Our team will reach out to the buyer to schedule a new pickup.',
+            actions: []
+          },
+          buyer: {
+            title: 'Return: Pickup Unsuccessful',
+            body: 'The pickup for your return was unsuccessful. Our team will contact you to schedule a new collection date soon.',
+            actions: []
+          }
+        },
+        'return-in-transit': {
+          seller: {
+            title: 'Return: In transit',
+            body: 'The order is now on the way back to the seller. We have sent you the tracking link directly via email.',
+            actions: []
+          },
+          buyer: {
+            title: 'Return: In transit',
+            body: 'The shipment is now on the way back to you.',
+            actions: []
+          }
+        },
+        'return-in-transit-2leg-leg1': {
+          seller: {
+            title: 'Return: In transit',
+            body: 'Your return is on the way, and we have sent you the tracking link via email. The shipment is sent to a logistics hub first, where the tracking link will be updated. Once available, we will send it to you via email directly.',
+            actions: []
+          },
+          buyer: {
+            title: 'Return: In transit',
+            body: 'The shipment is now on the way back. It is being sent to a logistics hub first, where the tracking link will be updated. Once available, we will send you the new tracking link via email directly.',
+            actions: []
+          }
+        },
+        'return-in-transit-2leg-leg2': {
+          seller: {
+            title: 'Return: Processed at Logistics Hub',
+            body: 'Your return has been processed at the logistics hub and is being shipped to the seller now. We have sent you the new tracking link via email.',
+            actions: []
+          },
+          buyer: {
+            title: 'Return: Processed at Logistics Hub',
+            body: 'The shipment has been processed at the logistics hub and is being shipped to you now. We have sent you the new tracking link via email.',
+            actions: []
+          }
+        },
+        'return-delivered': {
+          seller: {
+            title: 'Return: Delivered',
+            body: 'The return has arrived with the seller. Our support team will be in touch with you soon regarding the next steps.',
+            actions: []
+          },
+          buyer: {
+            title: 'Return: Delivered',
+            body: 'The returned order has been delivered back to you.',
+            actions: []
+          }
+        },
+        // ==================== LOST SHIPMENT ====================
+        'lost-investigation': {
+          seller: {
+            title: 'Carrier Update: Investigation Started',
+            body: 'The carrier has started an investigation to locate the shipment after there was no movement in the shipment tracking. Our support team will be in touch with you soon.',
+            actions: []
+          },
+          buyer: {
+            title: 'Carrier Update: Investigation Started',
+            body: 'The carrier has started an investigation to locate the shipment after there was no movement in the shipment tracking. Our support team will be in touch with you soon.',
+            actions: []
+          }
+        },
+        'lost-found': {
+          seller: {
+            title: 'Carrier Update: Shipment Located',
+            body: 'The carrier was able to locate the shipment after opening an investigation. The shipment is back in transit and can be tracked via the link below.',
+            actions: []
+          },
+          buyer: {
+            title: 'Carrier Update: Shipment Located',
+            body: 'The carrier was able to locate the shipment after opening an investigation. Your order is back in transit and can be tracked via the link below.',
+            actions: []
+          }
+        },
+        'lost-refunded': {
+          seller: {
+            title: 'Carrier Update: Shipment Lost',
+            body: 'The investigation is now closed and the parcel has been declared lost by the carrier. You are protected by buycycle - the buyer will be refunded and you will receive your payment for the sale.',
+            actions: []
+          },
+          buyer: {
+            title: 'Carrier Update: Shipment Lost',
+            body: 'The investigation is now closed and the parcel has been declared lost by the carrier. You are protected by buycycle - you will be refunded and the seller will receive their payment.',
+            actions: []
+          }
+        },
+        // ==================== UNAUTHORIZED RETURN ====================
+        'unauthorized-return': {
+          seller: {
+            title: 'Returning to sender',
+            body: 'The shipment could not be delivered, and the carrier has initiated a return. Our support team will contact you with more information and the next steps soon.',
+            actions: []
+          },
+          buyer: {
+            title: 'Returning to sender',
+            body: 'The shipment could not be delivered, and the carrier has initiated a return. Our support team will contact you with more information and the next steps soon.',
+            actions: []
+          }
+        },
+        // ==================== SALE NOT CONFIRMED ====================
+        'sale-not-confirmed': {
+          seller: {
+            title: 'Sale cancelled',
+            body: 'You didn\'t confirm the sale within the required timeframe, so we\'ve cancelled it and deactivated your listing.',
+            actions: []
+          },
+          buyer: {
+            title: 'Sale cancelled',
+            body: 'The seller didn\'t confirm the sale in time, so we\'ve cancelled it and issued you a full refund.',
+            actions: []
+          }
+        },
+        // ==================== CLAIMS ====================
+        'claim-opened': {
+          seller: {
+            title: 'Issue reported',
+            body: 'An issue was reported with the order. You have 5 days to resolve this directly. If no agreement is reached, buycycle\'s claims team will take over.',
+            actions: []
+          },
+          buyer: {
+            title: 'Issue reported',
+            body: 'An issue was reported with the order. You have 5 days to resolve this directly. If no agreement is reached, buycycle\'s claims team will take over.',
+            actions: []
+          }
+        },
+        'claim-completed': {
+          seller: {
+            title: 'Claim completed by buycycle',
+            body: 'buycycle has concluded the investigation and closed this claim. A resolution has been provided in line with our Buyer Protection Policy, and any applicable compensation has been issued.',
+            actions: []
+          },
+          buyer: {
+            title: 'Claim completed by buycycle',
+            body: 'buycycle has concluded the investigation and closed this claim. A resolution has been provided in line with our Buyer Protection Policy, and any applicable compensation has been issued.',
+            actions: []
+          }
+        },
+        'ce-contacts-seller': {
+          seller: {
+            title: 'We are trying to reach you',
+            body: 'Please check your emails and spam folder for communication from claims@buycycle.com. If we do not hear from you within 3 business days, we will need to close the case.',
+            actions: []
+          },
+          buyer: {
+            title: 'We are trying to reach you',
+            body: 'Please check your emails and spam folder for communication from claims@buycycle.com. If we do not hear from you within 3 business days, we will need to close the case.',
+            actions: []
+          }
+        },
+        'claim-transaction-cancelled': {
+          seller: {
+            title: 'Transaction canceled',
+            body: 'The buyer has been refunded, and any open shipments for this order have been canceled.',
+            actions: []
+          },
+          buyer: {
+            title: 'Transaction canceled',
+            body: 'The buyer has been refunded, and any open shipments for this order have been canceled.',
+            actions: []
+          }
+        },
+        // ==================== ADDITIONAL MANAGED STEPS ====================
+        'packaging-preparation': {
+          seller: {
+            title: 'Packaging preparation',
+            body: 'We\'re preparing your packaging and will notify you once it is shipped.',
+            actions: []
+          }
+        },
+        'packaging-delayed-24h': {
+          seller: {
+            title: 'Packaging delivery is taking longer than expected.',
+            body: 'Your bike pickup is scheduled for tomorrow {{pick_up_date}}, but according to tracking the packaging hasn\'t reached you yet. We\'ve put the pickup on hold - you can reschedule as soon as the packaging arrives.',
+            actions: []
+          }
+        },
+        'packaging-rescheduled': {
+          seller: {
+            title: 'Pickup rescheduled',
+            body: 'New order pick-up is scheduled for {{pick_up_date}}.',
+            actions: []
+          },
+          buyer: {
+            title: 'Pickup rescheduled',
+            body: 'New order pick-up is scheduled for {{pick_up_date}}.',
+            actions: []
+          }
+        },
+        'leave-review': {
+          seller: {
+            title: 'Leave a rating for {{name}}',
+            body: '',
+            actions: []
+          },
+          buyer: {
+            title: 'Leave a rating for {{name}}',
+            body: '',
+            actions: []
+          }
+        },
+        'review-added': {
+          seller: {
+            title: 'Feedback added',
+            body: 'Thank you for leaving your feedback!',
+            actions: []
+          },
+          buyer: {
+            title: 'Feedback added',
+            body: 'Thank you for leaving your feedback!',
+            actions: []
+          }
+        }
+      },
+
+      // ==================== UNMANAGED SHIPPING ====================
+      unmanaged: {
+        'u-awaiting-sale': {
+          seller: {
+            title: 'Paid! Confirm your details by [date]',
+            body: 'Congratulations! The buyer paid and we\'re securely holding the funds until they received the order. Confirm your details in time to get your shipping label. You will have 7 days to send the order.',
+            actions: [
+              { type: 'primary', text: 'Confirm sale' }
+            ]
+          },
+          buyer: {
+            title: 'Paid!',
+            body: 'Congrats! The seller has 48 hours to confirm their details so we can provide the shipping label. If not, the sale will be canceled automatically and you\'ll get a full refund. Your money stays safe with us until the order is in your hands.',
+            actions: []
+          }
+        },
+        'u-sale-confirmed': {
+          seller: {
+            title: 'Details confirmed!',
+            body: 'You must send the order before [date].',
+            actions: []
+          },
+          buyer: {
+            title: 'Sale confirmed!',
+            body: 'The seller must send the order before [date].',
+            actions: []
+          }
+        },
+        'u-payment-info-confirmed': {
+          seller: {
+            title: 'Payment information saved',
+            body: 'Your updated payment details have been saved.',
+            actions: []
+          },
+          buyer: {
+            title: 'Sale confirmed!',
+            body: 'The seller must send the order before [date].',
+            actions: []
+          }
+        },
+        'u-label-downloaded': {
+          seller: {
+            title: 'Pack and send the order before [date]',
+            body: 'Get your parcel ready in just a few easy steps.',
+            actions: [
+              { type: 'primary', text: 'Pack and send the order' }
+            ]
+          },
+          buyer: {
+            title: 'The seller must send the order before [date]',
+            body: 'The seller is now packing your order.',
+            actions: []
+          }
+        },
+        'u-packing': {
+          seller: {
+            title: 'Pack and send the order before [date]',
+            body: 'Get your parcel ready in just a few easy steps.',
+            actions: [
+              { type: 'primary', text: 'Pack and send the order' }
+            ]
+          },
+          buyer: {
+            title: 'The seller must send the order before [date]',
+            body: 'The seller is now packing your order.',
+            actions: []
+          }
+        },
+        'u-in-transit': {
+          seller: {
+            title: 'Order is on its way!',
+            body: 'The order was successfully shipped. Track the shipment below once tracking details are available.',
+            actions: [
+              { type: 'secondary', text: 'Track parcel' }
+            ]
+          },
+          buyer: {
+            title: 'Order is on its way!',
+            body: 'The order was successfully shipped. Track the shipment below once tracking details are available. Here is what you should do when receiving your order.',
+            actions: [
+              { type: 'primary', text: 'Order already received' },
+              { type: 'secondary', text: 'Track parcel' }
+            ]
+          }
+        },
+        'u-delivered': {
+          seller: {
+            title: 'Order delivered',
+            body: 'The buyer has 48 hours to confirm that everything is ok. You\'ll then be able to withdraw your payment.',
+            actions: []
+          },
+          buyer: {
+            title: 'Order delivered. Check it by [date]',
+            body: 'If it matches its description, confirm that everything is ok. If not, report any issues with the item or shipping.',
+            actions: [
+              { type: 'primary', text: 'Everything is ok' }
+            ]
+          }
+        },
+        'u-confirmed': {
+          seller: {
+            title: 'Order completed',
+            body: 'Thank you for selling on buycycle!',
+            actions: [
+              { type: 'primary', text: 'Get paid' },
+              { type: 'secondary', text: 'List an item' }
+            ]
+          },
+          buyer: {
+            title: 'Order completed',
+            body: 'Thank you for choosing buycycle!',
+            actions: [
+              { type: 'primary', text: 'List an item' }
+            ]
+          }
+        },
+        'u-cancelled': {
+          seller: {
+            title: 'Sale cancelled',
+            body: 'You\'ve cancelled the sale.',
+            actions: []
+          },
+          buyer: {
+            title: 'Sale cancelled',
+            body: 'Unfortunately, the seller has cancelled the sale. We\'ve refunded you in full.',
+            actions: []
+          }
+        },
+        'u-failed': {
+          seller: {
+            title: 'Order not sent. Sale canceled.',
+            body: 'The order wasn\'t shipped within the deadline, so we\'ve canceled the sale and will refund the buyer.',
+            actions: []
+          },
+          buyer: {
+            title: 'Order not sent. Sale canceled.',
+            body: 'The seller didn\'t ship the order, so we\'ve canceled the sale and issued a full refund to you.',
+            actions: []
+          }
+        },
+        // ==================== CARRIER UPDATES ====================
+        'u-out-for-delivery': {
+          seller: {
+            title: 'Carrier Update: Out for delivery',
+            body: 'The carrier has informed us that the order is out for delivery to the buyer. Check the tracking link for more details.',
+            actions: []
+          },
+          buyer: {
+            title: 'Carrier Update: Delivery today',
+            body: 'The carrier has informed us that your order is out for delivery. Please check the tracking link below for more details',
+            actions: []
+          }
+        },
+        'u-at-post-office': {
+          seller: {
+            title: 'Carrier Update: At Postal Office',
+            body: 'The shipment was redirected to a parcel shop and is ready for pickup. The buyer has to pick up the order within the holding period.',
+            actions: []
+          },
+          buyer: {
+            title: 'Carrier Update: At Postal Office',
+            body: 'The shipment was redirected to a parcel shop and is ready for pickup. Please check the tracking link below for further details.',
+            actions: []
+          }
+        },
+        // ==================== DELAY NOTIFICATIONS ====================
+        'u-delay-5day': {
+          seller: {
+            title: 'Shipping Update',
+            body: 'The shipment is still in transit and on the way to the buyer as planned. For more details, please check the tracking link below',
+            actions: []
+          },
+          buyer: {
+            title: 'Shipping Update',
+            body: 'The order is still in transit and on the way to you as planned. For more details, please check the tracking link below',
+            actions: []
+          }
+        },
+        // ==================== RETURN FLOW ====================
+        'u-return-preparing': {
+          seller: {
+            title: 'Return announcement',
+            body: 'Your return request has been confirmed. We are preparing the shipment now, you will receive an update via email once the return shipping label is ready.',
+            actions: []
+          },
+          buyer: {
+            title: 'Return announcement',
+            body: 'The order will be returned. Once the shipment is on the way back, we will share an update with you here. If you got any questions, feel free to reply to the last email from our support team.',
+            actions: []
+          }
+        },
+        'u-return-ready': {
+          seller: {
+            title: 'Return: Shipping Label Ready',
+            body: 'The return shipping label has been sent to the buyer. You\'ll be notified once the return is shipped.',
+            actions: []
+          },
+          buyer: {
+            title: 'Return: Shipping label ready',
+            body: 'The shipping label is ready, and you will receive it via email shortly. Then, please drop the parcel off at a carrier access point.',
+            actions: []
+          }
+        },
+        'u-return-missed-pickup': {
+          seller: {
+            title: 'Return Update: Pickup Unsuccessful',
+            body: 'The collection from the buyer was unsuccessful. Our team will reach out to the buyer to schedule a new pickup.',
+            actions: []
+          },
+          buyer: {
+            title: 'Return: Pickup Unsuccessful',
+            body: 'The pickup for your return was unsuccessful. Our team will contact you to schedule a new collection date soon.',
+            actions: []
+          }
+        },
+        'u-return-in-transit': {
+          seller: {
+            title: 'Return: In transit',
+            body: 'The order is now on the way back to the seller. We have sent you the tracking link directly via email.',
+            actions: []
+          },
+          buyer: {
+            title: 'Return: In transit',
+            body: 'The shipment is now on the way back to you.',
+            actions: []
+          }
+        },
+        'u-return-in-transit-2leg-leg1': {
+          seller: {
+            title: 'Return: In transit',
+            body: 'Your return is on the way, and we have sent you the tracking link via email. The shipment is sent to a logistics hub first, where the tracking link will be updated. Once available, we will send it to you via email directly.',
+            actions: []
+          },
+          buyer: {
+            title: 'Return: In transit',
+            body: 'The shipment is now on the way back. It is being sent to a logistics hub first, where the tracking link will be updated. Once available, we will send you the new tracking link via email directly.',
+            actions: []
+          }
+        },
+        'u-return-in-transit-2leg-leg2': {
+          seller: {
+            title: 'Return: Processed at Logistics Hub',
+            body: 'Your return has been processed at the logistics hub and is being shipped to the seller now. We have sent you the new tracking link via email.',
+            actions: []
+          },
+          buyer: {
+            title: 'Return: Processed at Logistics Hub',
+            body: 'The shipment has been processed at the logistics hub and is being shipped to you now. We have sent you the new tracking link via email.',
+            actions: []
+          }
+        },
+        'u-return-delivered': {
+          seller: {
+            title: 'Return: Delivered',
+            body: 'The return has arrived with the seller. Our support team will be in touch with you soon regarding the next steps.',
+            actions: []
+          },
+          buyer: {
+            title: 'Return: Delivered',
+            body: 'The returned order has been delivered back to you.',
+            actions: []
+          }
+        },
+        // ==================== LOST SHIPMENT ====================
+        'u-lost-bike-investigation': {
+          seller: {
+            title: 'Carrier Update: Investigation Started',
+            body: 'The carrier has started an investigation to locate the shipment after there was no movement in the shipment tracking. Our support team will be in touch with you soon.',
+            actions: []
+          },
+          buyer: {
+            title: 'Carrier Update: Investigation Started',
+            body: 'The carrier has started an investigation to locate the shipment after there was no movement in the shipment tracking. Our support team will be in touch with you soon.',
+            actions: []
+          }
+        },
+        'u-lost-bike-found': {
+          seller: {
+            title: 'Carrier Update: Shipment Located',
+            body: 'The carrier was able to locate the shipment after opening an investigation. The shipment is back in transit and can be tracked via the link below.',
+            actions: []
+          },
+          buyer: {
+            title: 'Carrier Update: Shipment Located',
+            body: 'The carrier was able to locate the shipment after opening an investigation. Your order is back in transit and can be tracked via the link below.',
+            actions: []
+          }
+        },
+        'u-lost-bike-refunded': {
+          seller: {
+            title: 'Carrier Update: Shipment Lost',
+            body: 'The investigation is now closed and the parcel has been declared lost by the carrier. You are protected by buycycle - the buyer will be refunded and you will receive your payment for the sale.',
+            actions: []
+          },
+          buyer: {
+            title: 'Carrier Update: Shipment Lost',
+            body: 'The investigation is now closed and the parcel has been declared lost by the carrier. You are protected by buycycle - you will be refunded and the seller will receive their payment.',
+            actions: []
+          }
+        },
+        // ==================== UNAUTHORIZED RETURN ====================
+        'u-unauthorized-return': {
+          seller: {
+            title: 'Returning to sender',
+            body: 'The shipment could not be delivered, and the carrier has initiated a return. Our support team will contact you with more information and the next steps soon.',
+            actions: []
+          },
+          buyer: {
+            title: 'Returning to sender',
+            body: 'The shipment could not be delivered, and the carrier has initiated a return. Our support team will contact you with more information and the next steps soon.',
+            actions: []
+          }
+        },
+        // ==================== CLAIMS ====================
+        'u-claim-opened': {
+          seller: {
+            title: 'Issue reported',
+            body: 'An issue was reported with the order. You have 5 days to resolve this directly. If no agreement is reached, buycycle\'s claims team will take over.',
+            actions: []
+          },
+          buyer: {
+            title: 'Issue reported',
+            body: 'An issue was reported with the order. You have 5 days to resolve this directly. If no agreement is reached, buycycle\'s claims team will take over.',
+            actions: []
+          }
+        },
+        'u-claim-completed': {
+          seller: {
+            title: 'Claim completed by buycycle',
+            body: 'buycycle has concluded the investigation and closed this claim. A resolution has been provided in line with our Buyer Protection Policy, and any applicable compensation has been issued.',
+            actions: []
+          },
+          buyer: {
+            title: 'Claim completed by buycycle',
+            body: 'buycycle has concluded the investigation and closed this claim. A resolution has been provided in line with our Buyer Protection Policy, and any applicable compensation has been issued.',
+            actions: []
+          }
+        },
+        'u-ce-contacts-seller': {
+          seller: {
+            title: 'We are trying to reach you',
+            body: 'Please check your emails and spam folder for communication from claims@buycycle.com. If we do not hear from you within 3 business days, we will need to close the case.',
+            actions: []
+          },
+          buyer: {
+            title: 'We are trying to reach you',
+            body: 'Please check your emails and spam folder for communication from claims@buycycle.com. If we do not hear from you within 3 business days, we will need to close the case.',
+            actions: []
+          }
+        },
+        'u-claim-transaction-cancelled': {
+          seller: {
+            title: 'Transaction canceled',
+            body: 'The buyer has been refunded, and any open shipments for this order have been canceled.',
+            actions: []
+          },
+          buyer: {
+            title: 'Transaction canceled',
+            body: 'The buyer has been refunded, and any open shipments for this order have been canceled.',
+            actions: []
+          }
+        },
+        // ==================== SALE NOT CONFIRMED ====================
+        'u-sale-not-confirmed': {
+          seller: {
+            title: 'Sale cancelled',
+            body: 'You didn\'t confirm the sale within the required timeframe, so we\'ve cancelled it and deactivated your listing.',
+            actions: []
+          },
+          buyer: {
+            title: 'Sale cancelled',
+            body: 'The seller didn\'t confirm the sale in time, so we\'ve cancelled it and issued you a full refund.',
+            actions: []
+          }
+        }
+      }
+    };
+
+    // Render admin message
+    function renderAdminMessage(content, isActive, timestamp) {
+      let html = `<div class="admin-message ${isActive ? 'active' : 'inactive'}">`;
+      html += `<div class="admin-message-title">${content.title}</div>`;
+      html += `<div class="admin-message-body">${content.body}</div>`;
+      html += `<div class="admin-message-time">${timestamp}</div>`;
+
+      // Only show actions on active (current) step
+      if (isActive && content.actions && content.actions.length > 0) {
+        html += `<div class="action-buttons">`;
+        content.actions.forEach(action => {
+          const className = action.type === 'primary' ? 'btn-primary' : 'btn-secondary';
+          const arrow = action.type === 'primary' ? `<svg viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>` : '';
+
+          // Add special onclick for "Confirm sale" button (managed shipping, seller, first step)
+          let onclick = '';
+          if (action.text === 'Confirm sale' && currentShippingType === 'managed' && currentPerspective === 'seller') {
+            onclick = ' onclick="openConfirmSaleModal()"';
+          }
+
+          html += `<button class="${className}"${onclick}>${action.text}${arrow}</button>`;
+        });
+        html += `</div>`;
+      }
+
+      html += `</div>`;
+      return html;
+    }
+
+    // Render all admin messages (history + current)
+    function renderContent() {
+      const container = document.getElementById('admin-messages');
+      const stepOrder = currentShippingType === 'managed' ? managedStepOrder : unmanagedStepOrder;
+
+      // Find current step index
+      const currentIndex = stepOrder.indexOf(currentStep);
+
+      // Handle standalone states (show only the single message, not a history)
+      const standaloneStates = [
+        // Failure states
+        'cancelled', 'pickup-unsuccessful', 'packaging-delayed', 'u-cancelled', 'u-failed',
+        'sale-not-confirmed', 'u-sale-not-confirmed',
+        'packaging-delayed-24h', 'packaging-rescheduled',
+        // Delivery issues
+        'failed-delivery',
+        // Carrier updates
+        'out-for-delivery', 'at-post-office',
+        'u-out-for-delivery', 'u-at-post-office',
+        // Logistics hub
+        'seller-to-hub', 'at-hub', 'hub-to-buyer',
+        // Delay notifications
+        'delay-5day', 'delay-10day',
+        'u-delay-5day',
+        // Return flow
+        'return-preparing', 'return-ready', 'return-missed-pickup', 'return-in-transit',
+        'return-in-transit-2leg-leg1', 'return-in-transit-2leg-leg2', 'return-delivered',
+        'u-return-preparing', 'u-return-ready', 'u-return-missed-pickup', 'u-return-in-transit',
+        'u-return-in-transit-2leg-leg1', 'u-return-in-transit-2leg-leg2', 'u-return-delivered',
+        // Lost shipment
+        'lost-investigation', 'lost-found', 'lost-refunded',
+        'u-lost-bike-investigation', 'u-lost-bike-found', 'u-lost-bike-refunded',
+        // Unauthorized return
+        'unauthorized-return', 'u-unauthorized-return',
+        // Claims
+        'claim-opened', 'claim-completed', 'ce-contacts-seller', 'claim-transaction-cancelled',
+        'u-claim-opened', 'u-claim-completed', 'u-ce-contacts-seller', 'u-claim-transaction-cancelled',
+        // Additional managed steps
+        'packaging-preparation', 'leave-review', 'review-added'
+      ];
+      if (standaloneStates.includes(currentStep)) {
+        const content = statusContent[currentShippingType][currentStep];
+        if (content && content[currentPerspective]) {
+          container.innerHTML = renderAdminMessage(content[currentPerspective], true, stepTimestamps[0]);
+        }
+        return;
+      }
+
+      let html = '';
+
+      // Render all steps up to and including current step
+      for (let i = 0; i <= currentIndex; i++) {
+        const stepId = stepOrder[i];
+        const content = statusContent[currentShippingType][stepId];
+        if (content && content[currentPerspective]) {
+          const isActive = i === currentIndex;
+          html += renderAdminMessage(content[currentPerspective], isActive, stepTimestamps[i] || '14:58');
+        }
+      }
+
+      container.innerHTML = html;
+
+      // Scroll to bottom to show current message
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function updateStepIndicators() {
+      const stepsContainer = currentShippingType === 'managed'
+        ? document.getElementById('managed-steps')
+        : document.getElementById('unmanaged-steps');
+
+      const stepOrder = currentShippingType === 'managed' ? managedStepOrder : unmanagedStepOrder;
+      const currentIndex = stepOrder.indexOf(currentStep);
+      const steps = stepsContainer.querySelectorAll('.step-item');
+
+      steps.forEach(step => {
+        const stepId = step.dataset.step;
+        const stepIndex = stepOrder.indexOf(stepId);
+        step.classList.remove('active', 'completed');
+
+        if (stepId === currentStep) {
+          step.classList.add('active');
+        } else if (stepIndex !== -1 && stepIndex < currentIndex) {
+          step.classList.add('completed');
+        }
+      });
+    }
+
+    function showStep(stepId) {
+      currentStep = stepId;
+      const stepOrder = currentShippingType === 'managed' ? managedStepOrder : unmanagedStepOrder;
+      currentStepIndex = stepOrder.indexOf(stepId);
+
+      renderContent();
+      updateStepIndicators();
+
+      // Update product info based on shipping type
+      const productName = document.getElementById('product-name');
+      const productPrice = document.getElementById('product-price');
+      if (currentShippingType === 'managed') {
+        productName.textContent = 'Spectral CFR 9.0 SL';
+        productPrice.textContent = '€7.300';
+      } else {
+        productName.textContent = 'Cycling Jersey Pro';
+        productPrice.textContent = '€89';
+      }
+
+      // Update protection text
+      const protectionText = document.getElementById('protection-text');
+      protectionText.textContent = currentPerspective === 'seller'
+        ? "buycycle's seller protection guarantees you'll be paid securely. Learn more."
+        : "buycycle's buyer protection keeps your payment safe until delivery. Learn more.";
+    }
+
+    function switchPerspective(perspective) {
+      currentPerspective = perspective;
+
+      document.querySelectorAll('.toggle-btn[data-perspective]').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.perspective === perspective);
+      });
+
+      showStep(currentStep);
+    }
+
+    function switchShippingType(type) {
+      currentShippingType = type;
+
+      document.querySelectorAll('.toggle-btn[data-type]').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.type === type);
+      });
+
+      // Update info text
+      const info = document.getElementById('shipping-type-info');
+      if (type === 'managed') {
+        info.innerHTML = `
+          <div class="shipping-type-title">Managed Shipping</div>
+          <div class="shipping-type-desc">For bikes & high-value items. buycycle provides packaging materials and arranges carrier pickup at seller's doorstep.</div>
+        `;
+      } else {
+        info.innerHTML = `
+          <div class="shipping-type-title">Unmanaged Shipping</div>
+          <div class="shipping-type-desc">For smaller items. Seller downloads shipping label, packs item themselves, and brings it to a drop-off point.</div>
+        `;
+      }
+
+      // Toggle step lists
+      document.getElementById('managed-steps').style.display = type === 'managed' ? 'block' : 'none';
+      document.getElementById('unmanaged-steps').style.display = type === 'unmanaged' ? 'block' : 'none';
+
+      // Reset to first step
+      currentStep = type === 'managed' ? 'awaiting-sale' : 'u-awaiting-sale';
+      showStep(currentStep);
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      showStep('awaiting-sale');
+    });
+  </script>
+</body>
+</html>
