@@ -569,6 +569,214 @@
       pointer-events: none;
     }
 
+    /* Photo Upload Modal */
+    .photo-modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .photo-modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .photo-modal {
+      background: var(--bg-primary);
+      border-radius: 16px;
+      padding: 24px;
+      max-width: 859px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .photo-modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    .photo-modal-title {
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--content-primary);
+      line-height: 27px;
+    }
+
+    .photo-modal-close {
+      width: 24px;
+      height: 24px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .photo-modal-instruction {
+      font-size: 14px;
+      color: var(--content-tertiary);
+      line-height: 21px;
+      margin-bottom: 16px;
+    }
+
+    .photo-cards-container {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .photo-card {
+      flex: 1;
+      background: var(--bg-secondary);
+      border-radius: 8px;
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .photo-card-image {
+      width: 186px;
+      height: 139px;
+      border-radius: 6px;
+      overflow: hidden;
+      background: var(--bg-quartenary);
+    }
+
+    .photo-card-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .photo-card-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--content-primary);
+      line-height: 21px;
+      text-align: center;
+    }
+
+    .photo-card-small {
+      width: 174px;
+      background: var(--bg-secondary);
+      border-radius: 8px;
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .photo-card-small .photo-card-image {
+      width: 139px;
+      height: 129px;
+    }
+
+    .warning-box {
+      background: #FFFBEB;
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .warning-box-title {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #92400E;
+      line-height: 21px;
+    }
+
+    .warning-box-text {
+      font-size: 14px;
+      color: #92400E;
+      line-height: 21px;
+    }
+
+    /* Confirmation Modal */
+    .confirmation-modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(9, 9, 7, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1001;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .confirmation-modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .confirmation-modal {
+      background: var(--bg-primary);
+      border-radius: 16px;
+      padding: 24px;
+      width: 391px;
+      max-width: 90%;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .confirmation-modal-header {
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border-tertiary);
+    }
+
+    .confirmation-modal-title {
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--content-primary);
+      line-height: 27px;
+    }
+
+    .confirmation-modal-content {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .confirmation-modal-text {
+      font-size: 16px;
+      color: var(--content-secondary);
+      line-height: 24px;
+    }
+
+    .confirmation-modal-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
     .modal-header {
       display: flex;
       align-items: center;
@@ -753,21 +961,44 @@
     .form-checkbox {
       display: flex;
       align-items: flex-start;
-      gap: 12px;
+      gap: 8px;
       margin-top: 8px;
     }
 
-    .form-checkbox input {
+    .form-checkbox input[type="checkbox"] {
       width: 20px;
       height: 20px;
+      min-width: 20px;
+      min-height: 20px;
+      margin: 0;
       margin-top: 2px;
-      accent-color: var(--bg-primary-reverse);
+      border: 1px solid var(--border-secondary);
+      border-radius: 4px;
+      background: var(--bg-tertiary);
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+    }
+
+    .form-checkbox input[type="checkbox"]:checked {
+      background-color: var(--bg-primary-reverse);
+      border-color: var(--bg-primary-reverse);
+      background-image: url("data:image/svg+xml,%3Csvg width='14' height='11' viewBox='0 0 14 11' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 5L5.5 9.5L13 1' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: center;
     }
 
     .form-checkbox-label {
-      font-size: 14px;
+      font-size: 16px;
       color: var(--content-secondary);
-      line-height: 21px;
+      line-height: 24px;
+      flex: 1;
+    }
+
+    .form-checkbox-label a {
+      color: var(--content-secondary);
+      text-decoration: underline;
     }
 
     /* Packaging Kit Section */
@@ -1607,6 +1838,16 @@
               <div class="step-description">Pickup date rescheduled</div>
             </div>
           </div>
+          <div class="step-item failed" data-step="packaging-reordered" data-index="-1" onclick="showStep('packaging-reordered')">
+            <div class="step-indicator">
+              <span class="step-number">!</span>
+              <svg class="fail-icon" viewBox="0 0 14 14" fill="none"><path d="M3 3L11 11M11 3L3 11" stroke="#B91C1C" stroke-width="2" stroke-linecap="round"/></svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Packaging Re-ordered</div>
+              <div class="step-description">New packaging ordered due to delays</div>
+            </div>
+          </div>
         </div>
 
         <!-- UNMANAGED SHIPPING STEPS -->
@@ -2275,7 +2516,539 @@
           </button>
         </div>
       </div>
+
+      <!-- Confirm Sale Subflow Panel - UNMANAGED -->
+      <div class="subflow-panel" id="confirm-sale-unmanaged-panel">
+        <!-- Panel Header -->
+        <div class="modal-header">
+          <button class="modal-back" onclick="handleUnmanagedModalBack()">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Confirm sale
+          </button>
+        </div>
+
+      <!-- Modal Content -->
+      <div class="modal-content">
+        <!-- Step 1: Personal Information -->
+        <div class="modal-step active" data-step="1">
+          <div class="progress-bar">
+            <div class="progress-step active"></div>
+            <div class="progress-step"></div>
+          </div>
+
+          <div class="info-banner" style="background: linear-gradient(229.19deg, rgb(253, 253, 160) 0%, rgb(218, 253, 160) 100%);">
+            <div class="info-banner-content">
+              <div class="info-banner-title">
+                <img src="https://www.figma.com/api/mcp/asset/2110182e-598d-474b-909e-5aa18c49b749" alt="" width="24" height="19">
+                The buyer paid for the delivery!
+              </div>
+              <div class="info-banner-text">Confirm your details and we'll provide you with the shipping label. You will have <strong>7 days</strong> to send the order to the buyer.</div>
+            </div>
+          </div>
+
+          <div class="form-section-title" style="font-size: 18px; font-weight: 500; color: var(--content-secondary); margin-bottom: 16px;">
+            Personal information:
+          </div>
+
+          <div class="form-row">
+            <div class="form-field">
+              <label class="form-label">First name</label>
+              <input type="text" class="form-input" value="Jonas">
+            </div>
+            <div class="form-field">
+              <label class="form-label">Last name</label>
+              <input type="text" class="form-input" value="Jaeger">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-field">
+              <label class="form-label">Phone number</label>
+              <div class="phone-input-wrapper">
+                <div class="phone-flag">
+                  <span style="font-size: 16px;">🇩🇪</span>
+                  <span style="font-size: 14px; color: var(--content-primary);">+49</span>
+                  <svg viewBox="0 0 12 12" fill="none"><path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <input type="tel" value="015123456789" style="flex: 1;">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="flex-shrink: 0;">
+                  <circle cx="10" cy="10" r="8" fill="#E8F8F0" stroke="#146C43" stroke-width="1.5"/>
+                  <path d="M6 10L9 13L14 7" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row" style="margin-top: 24px;">
+            <div class="form-field">
+              <label class="form-label">Street</label>
+              <input type="text" class="form-input" placeholder="Enter street">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-field">
+              <label class="form-label">House number</label>
+              <input type="text" class="form-input" placeholder="Enter house number">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-field">
+              <label class="form-label">City</label>
+              <input type="text" class="form-input" placeholder="Enter city">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-field">
+              <label class="form-label">Postal code</label>
+              <input type="text" class="form-input" placeholder="Enter postal code">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-field">
+              <label class="form-label">Country</label>
+              <select class="form-select">
+                <option>Germany</option>
+                <option>Austria</option>
+                <option>Switzerland</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-checkbox" style="margin-top: 24px;">
+            <input type="checkbox" id="unmanaged-confirm">
+            <label for="unmanaged-confirm" class="form-checkbox-label">I confirm my information is correct</label>
+          </div>
+        </div>
+
+        <!-- Step 2: Summary -->
+        <div class="modal-step" data-step="2">
+          <div class="progress-bar">
+            <div class="progress-step completed"></div>
+            <div class="progress-step completed"></div>
+          </div>
+
+          <div class="section-title" style="font-size: 24px; font-weight: 500; margin-bottom: 24px;">Summary</div>
+
+          <div class="summary-section">
+            <div class="summary-label" style="font-size: 18px; font-weight: 500;">Order pick-up location:</div>
+            <div class="summary-value">
+              Jonas Jaeger<br>
+              Atelierstrasse 12<br>
+              80000 Munich, Germany
+            </div>
+          </div>
+
+          <div class="earnings-box">
+            <div class="earnings-title">Your earnings:</div>
+            <div class="earnings-row">
+              <span class="earnings-row-label">Sale price</span>
+              <span class="earnings-row-value" style="font-weight: 500;">€ 7.250</span>
+            </div>
+            <div class="earnings-row">
+              <span class="earnings-row-label">Seller Protection</span>
+              <span class="earnings-row-value">€ 253</span>
+            </div>
+            <div class="earnings-row">
+              <span class="earnings-row-label">Boosting rate (x.xx%)</span>
+              <span class="earnings-row-value">€ 253</span>
+            </div>
+            <div class="earnings-total">
+              <span class="earnings-total-label">You receive</span>
+              <span class="earnings-total-value">€ 6.744</span>
+            </div>
+          </div>
+
+          <div class="legal-box">
+            <div class="legal-box-title">By selling on buycycle:</div>
+            <div class="legal-box-text">I confirm that my sold item matches the images, details and condition described in the ad. buycycle may reduce my payment by up to 15% or return the item at my expense if any undisclosed issues are discovered or if improper packing causes damage.</div>
+          </div>
+        </div>
+      </div>
+
+        <!-- Panel Footer -->
+        <div class="modal-footer">
+          <button class="btn-primary" style="width: 100%; height: 48px;" onclick="handleUnmanagedModalNext()" id="unmanaged-modal-cta">
+            Continue
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Pack and Send Order Subflow Panel - UNMANAGED -->
+      <div class="subflow-panel" id="pack-send-order-panel">
+        <!-- Panel Header -->
+        <div class="modal-header">
+          <button class="modal-back" onclick="closePackSendOrderModal()">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Pack and send the order
+          </button>
+        </div>
+
+        <!-- Modal Content -->
+        <div class="modal-content" style="max-height: calc(618px - 64px); overflow-y: auto;">
+          <!-- Section 1: Pack the order -->
+          <div style="margin-bottom: 24px;">
+            <div style="font-size: 18px; font-weight: 500; color: var(--content-primary); margin-bottom: 12px;">Pack the order</div>
+
+            <div style="background: linear-gradient(197.28deg, rgb(253, 253, 160) 30%, rgb(218, 253, 160) 100%); padding: 16px 8px; border-radius: 12px; margin-bottom: 12px;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" style="flex-shrink: 0;">
+                  <rect x="3" y="5" width="18" height="14" rx="2" stroke="#090907" stroke-width="1.5"/>
+                  <path d="M3 10H21" stroke="#090907" stroke-width="1.5"/>
+                  <path d="M8 5V10" stroke="#090907" stroke-width="1.5"/>
+                  <path d="M16 5V10" stroke="#090907" stroke-width="1.5"/>
+                </svg>
+                <div style="flex: 1; font-size: 16px; font-weight: 500; color: var(--content-secondary); line-height: 24px;">Max. parcel size: 30x40x10cm</div>
+              </div>
+            </div>
+
+            <div style="font-size: 16px; color: var(--content-secondary); line-height: 24px; margin-bottom: 8px;">
+              If your package exceeds these dimensions, you may be charged an oversize surcharge. Please contact Customer Service in advance.
+            </div>
+
+            <div style="font-size: 16px; color: var(--content-secondary); line-height: 24px;">
+              Make sure to include everything described in your listing and that it is well wrapped and protected.
+            </div>
+          </div>
+
+          <!-- Section 2: Print the shipping label -->
+          <div style="margin-bottom: 24px;">
+            <div style="font-size: 18px; font-weight: 500; color: var(--content-primary); margin-bottom: 12px;">Print the shipping label</div>
+
+            <div style="font-size: 16px; color: var(--content-secondary); line-height: 24px; margin-bottom: 12px;">
+              Stick it on your package and make sure the barcode is scannable.
+            </div>
+
+            <button class="btn-primary" style="width: 100%; height: 46px;">
+              Print shipping label
+            </button>
+          </div>
+
+          <!-- Section 3: Send the order -->
+          <div style="margin-bottom: 24px;">
+            <div style="font-size: 18px; font-weight: 500; color: var(--content-primary); margin-bottom: 12px;">Send the order</div>
+
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+              <div style="font-size: 16px; color: var(--content-secondary); line-height: 24px;">Carrier: DHL</div>
+              <img src="https://www.figma.com/api/mcp/asset/1a5baab3-124e-4782-8f64-2230ab8ef5de" alt="DHL" style="height: 20px; width: 31.4px;">
+            </div>
+
+            <div style="font-size: 14px; color: var(--content-secondary); line-height: 21px; margin-bottom: 12px;">
+              Drop off the parcel at a branch or parcel shop.
+            </div>
+
+            <button class="btn-secondary" style="width: 100%; height: 46px; margin-bottom: 12px;">
+              See branches / parcel shops
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+
+            <div style="font-size: 14px; color: var(--content-secondary); line-height: 21px;">
+              <strong>Reminder:</strong> You must send the order by 24.January 2025. If you don't, we will automatically cancel the sale and deactivate your listing.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pack Order Subflow Panel - MANAGED -->
+      <div class="subflow-panel" id="pack-order-panel">
+        <!-- Panel Header -->
+        <div class="modal-header">
+          <button class="modal-back" onclick="closePackOrderModal()">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Pack the order
+          </button>
+        </div>
+
+        <!-- Modal Content -->
+        <div class="modal-content" style="max-height: calc(618px - 64px); overflow-y: auto;">
+          <!-- Yellow Banner -->
+          <div style="background: linear-gradient(224.84deg, rgb(253, 253, 160) 0%, rgb(218, 253, 160) 100%); padding: 16px; border-radius: 12px; margin-bottom: 24px;">
+            <div style="display: flex; align-items: flex-start; gap: 8px; margin-bottom: 8px;">
+              <div style="width: 24px; height: 24px; flex-shrink: 0; margin-top: 2px; position: relative;">
+                <img src="https://www.figma.com/api/mcp/asset/a436a213-a910-439c-ba4b-3b5dfad49811" alt="" style="position: absolute; left: 3px; top: 2px; width: 18px; height: 20px;" />
+              </div>
+              <div style="flex: 1;">
+                <div style="font-size: 18px; font-weight: 700; color: var(--content-primary); margin-bottom: 8px;">Protect it!</div>
+                <div style="font-size: 16px; color: var(--content-primary); line-height: 24px; margin-bottom: 8px;">The more you protect your order, the better we can ensure it is fully covered against shipping damages.</div>
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                  <a href="#" style="text-decoration: underline; color: var(--content-primary); font-size: 16px; display: inline-flex; align-items: center; gap: 8px; width: fit-content;">
+                    How to pack your bike: video tutorial
+                    <div style="width: 24px; height: 24px; position: relative; flex-shrink: 0;">
+                      <img src="https://www.figma.com/api/mcp/asset/c4a845ac-bda0-4a64-acae-9bed0e0a0bab" alt="" style="position: absolute; left: 3px; top: 3px; width: 18px; height: 18px;" />
+                    </div>
+                  </a>
+                  <a href="#" style="text-decoration: underline; color: var(--content-primary); font-size: 16px; display: inline-flex; align-items: center; gap: 8px; width: fit-content;">
+                    Read our send liability policy
+                    <div style="width: 24px; height: 24px; position: relative; flex-shrink: 0;">
+                      <img src="https://www.figma.com/api/mcp/asset/c4a845ac-bda0-4a64-acae-9bed0e0a0bab" alt="" style="position: absolute; left: 3px; top: 3px; width: 18px; height: 18px;" />
+                    </div>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 1 -->
+          <div style="margin-bottom: 24px;">
+            <div style="font-size: 16px; font-weight: 500; color: var(--content-secondary); margin-bottom: 24px;">
+              <strong>1.</strong> Upload at least 3 photos of the order next to the packaging material.
+            </div>
+
+            <button class="btn-secondary" style="margin-bottom: 24px; width: auto; padding: 8px 16px; height: 36px; font-size: 14px;" onclick="openPhotoModal('photo-modal-step1')">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="1.5"/>
+                <circle cx="8.5" cy="8.5" r="1.5" fill="currentColor"/>
+                <path d="M21 15L16 10L5 21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Add photos
+            </button>
+
+            <div style="display: flex; gap: 8px;">
+              <div style="width: 114px; height: 85px; background: var(--bg-primary); border: 1px solid var(--border-tertiary); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
+                  <rect x="4" y="4" width="22" height="22" rx="2" stroke="#EAEAEA" stroke-width="1.5"/>
+                  <circle cx="11" cy="11" r="2" stroke="#EAEAEA" stroke-width="1.5"/>
+                  <path d="M26 20L20 14L8 26" stroke="#EAEAEA" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div style="width: 114px; height: 85px; background: var(--bg-primary); border: 1px solid var(--border-tertiary); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
+                  <rect x="4" y="4" width="22" height="22" rx="2" stroke="#EAEAEA" stroke-width="1.5"/>
+                  <circle cx="11" cy="11" r="2" stroke="#EAEAEA" stroke-width="1.5"/>
+                  <path d="M26 20L20 14L8 26" stroke="#EAEAEA" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div style="width: 114px; height: 85px; background: var(--bg-primary); border: 1px solid var(--border-tertiary); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
+                  <rect x="4" y="4" width="22" height="22" rx="2" stroke="#EAEAEA" stroke-width="1.5"/>
+                  <circle cx="11" cy="11" r="2" stroke="#EAEAEA" stroke-width="1.5"/>
+                  <path d="M26 20L20 14L8 26" stroke="#EAEAEA" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 2 -->
+          <div style="margin-bottom: 24px;">
+            <div style="font-size: 16px; font-weight: 500; color: var(--content-secondary); margin-bottom: 24px;">
+              <strong>2.</strong> Upload 4 pictures of the wrapped order inside the packaging, and of the sealed packaging.
+            </div>
+
+            <!-- Gray Info Box -->
+            <div style="background: var(--bg-secondary); padding: 16px; border-radius: 12px; margin-bottom: 24px;">
+              <div style="display: flex; align-items: flex-start; gap: 8px; margin-bottom: 8px;">
+                <svg width="24" height="20" viewBox="0 0 24 20" fill="none" style="flex-shrink: 0; margin-top: 2px;">
+                  <path d="M3 2H21V4H3V2ZM3 7H21V9H3V7ZM3 12H21V14H3V12ZM3 17H15V19H3V17Z" fill="#090907"/>
+                </svg>
+                <div style="font-size: 16px; font-weight: 700; color: var(--content-primary);">Keep buycycle's packaging dimensions</div>
+              </div>
+              <div style="font-size: 14px; color: var(--content-secondary); line-height: 21px;">
+                Please, don't fold or reshape buycycle's packaging to avoid extra charges:
+                <ul style="margin-top: 4px; padding-left: 20px; list-style-type: disc;">
+                  <li>399cm max girth (length + 2x height + 2x width of your package)</li>
+                  <li>149 cm max longest side</li>
+                </ul>
+              </div>
+            </div>
+
+            <button class="btn-secondary" style="margin-bottom: 24px; width: auto; padding: 8px 16px; height: 36px; font-size: 14px;" onclick="openPhotoModal('photo-modal-step2')">
+              Add photos
+            </button>
+
+            <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+              <div style="width: 114px; height: 85px; background: var(--bg-primary); border: 1px solid var(--border-tertiary); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
+                  <rect x="4" y="4" width="22" height="22" rx="2" stroke="#EAEAEA" stroke-width="1.5"/>
+                  <circle cx="11" cy="11" r="2" stroke="#EAEAEA" stroke-width="1.5"/>
+                  <path d="M26 20L20 14L8 26" stroke="#EAEAEA" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div style="width: 114px; height: 85px; background: var(--bg-primary); border: 1px solid var(--border-tertiary); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
+                  <rect x="4" y="4" width="22" height="22" rx="2" stroke="#EAEAEA" stroke-width="1.5"/>
+                  <circle cx="11" cy="11" r="2" stroke="#EAEAEA" stroke-width="1.5"/>
+                  <path d="M26 20L20 14L8 26" stroke="#EAEAEA" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div style="width: 114px; height: 85px; background: var(--bg-primary); border: 1px solid var(--border-tertiary); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
+                  <rect x="4" y="4" width="22" height="22" rx="2" stroke="#EAEAEA" stroke-width="1.5"/>
+                  <circle cx="11" cy="11" r="2" stroke="#EAEAEA" stroke-width="1.5"/>
+                  <path d="M26 20L20 14L8 26" stroke="#EAEAEA" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+
+            <div style="font-size: 14px; color: var(--content-tertiary); line-height: 21px;">Those pictures will be available to buyer.</div>
+          </div>
+
+          <!-- Terms & Conditions -->
+          <div style="margin-bottom: 24px;">
+            <div style="font-size: 18px; font-weight: 500; color: var(--content-secondary); margin-bottom: 24px;">Terms & Conditions agreement</div>
+
+            <div class="form-checkbox" style="margin-bottom: 24px;">
+              <input type="checkbox" id="pack-order-terms-1">
+              <label for="pack-order-terms-1" class="form-checkbox-label">I have read and agreed to the <a href="#" style="text-decoration: underline; color: var(--content-secondary);">Terms and Conditions</a> as well as the <a href="#" style="text-decoration: underline; color: var(--content-secondary);">Sender liability policy</a>.</label>
+            </div>
+
+            <div class="form-checkbox">
+              <input type="checkbox" id="pack-order-terms-2">
+              <label for="pack-order-terms-2" class="form-checkbox-label">I have securely packed my item with adequate padding and acknowledge that any damage caused by wheels or components getting in contact with the frame will be deducted from my payment.</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel Footer -->
+        <div class="modal-footer">
+          <button class="btn-primary" style="width: 100%; height: 48px;" onclick="confirmPackOrder()">
+            Next
+          </button>
+        </div>
+      </div>
+
       </div><!-- end subflow-wrapper -->
+    </div>
+  </div>
+
+  <!-- Photo Upload Modal -->
+  <div class="photo-modal-overlay" id="photo-modal-step1">
+    <div class="photo-modal">
+      <div class="photo-modal-header">
+        <div class="photo-modal-title">What photos do we need?</div>
+        <button class="photo-modal-close" onclick="closePhotoModal('photo-modal-step1')">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M18 6L6 18M6 6L18 18" stroke="#090907" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="photo-modal-instruction">
+        Take at least 3 photos to document the packaging process:
+      </div>
+
+      <div class="photo-cards-container">
+        <div class="photo-card">
+          <div class="photo-card-image">
+            <img src="https://www.figma.com/api/mcp/asset/81a6a304-4ef7-48dd-85ef-4330a115363d" alt="Unwrapped order - Left">
+          </div>
+          <div class="photo-card-label">1. Unwrapped order - Left</div>
+        </div>
+
+        <div class="photo-card">
+          <div class="photo-card-image">
+            <img src="https://www.figma.com/api/mcp/asset/a4a0073f-eb54-4469-9a73-6a9978d010ae" alt="Unwrapped order - Right">
+          </div>
+          <div class="photo-card-label">2. Unwrapped order - Right</div>
+        </div>
+
+        <div class="photo-card">
+          <div class="photo-card-image">
+            <img src="https://www.figma.com/api/mcp/asset/20c53803-31b0-45bf-854e-a7447b6f6bf7" alt="Wrapped order in front of packaging">
+          </div>
+          <div class="photo-card-label">3. Wrapped order in front of packaging</div>
+        </div>
+      </div>
+
+      <button class="btn-primary" style="width: 100%; height: 48px;" onclick="closePhotoModal('photo-modal-step1')">
+        Add photos
+      </button>
+    </div>
+  </div>
+
+  <!-- Photo Upload Modal - Step 2 -->
+  <div class="photo-modal-overlay" id="photo-modal-step2">
+    <div class="photo-modal">
+      <div class="photo-modal-header">
+        <div class="photo-modal-title">What photos do we need?</div>
+        <button class="photo-modal-close" onclick="closePhotoModal('photo-modal-step2')">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M18 6L6 18M6 6L18 18" stroke="#090907" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="photo-modal-instruction">
+        Take photos of the sealed box from all angles:
+      </div>
+
+      <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
+        <div class="photo-card-small">
+          <div class="photo-card-image">
+            <img src="https://www.figma.com/api/mcp/asset/783e6b1e-c7d4-480b-98e0-ade9f60b8374" alt="Wrapped order inside the box">
+          </div>
+          <div class="photo-card-label">Wrapped order inside the box</div>
+        </div>
+
+        <div class="photo-card-small">
+          <div class="photo-card-image">
+            <img src="https://www.figma.com/api/mcp/asset/b3417f2a-c787-4473-a835-dcbac881ab1c" alt="Sealed box - Front view">
+          </div>
+          <div class="photo-card-label">Sealed box - Front view</div>
+        </div>
+
+        <div class="photo-card-small">
+          <div class="photo-card-image">
+            <img src="https://www.figma.com/api/mcp/asset/0761351f-6caf-44ac-a241-abe608c0a623" alt="Sealed box - Side view">
+          </div>
+          <div class="photo-card-label">Sealed box - Side view</div>
+        </div>
+
+        <div class="photo-card-small">
+          <div class="photo-card-image">
+            <img src="https://www.figma.com/api/mcp/asset/cddf2eab-bd9a-4be3-b10a-64ea4c5299ad" alt="Sealed box - Handwritten order ID">
+          </div>
+          <div class="photo-card-label">Sealed box - Handwritten order ID</div>
+        </div>
+      </div>
+
+      <div class="warning-box" style="margin-bottom: 24px;">
+        <div class="warning-box-title">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="10" fill="#F59E0B"/>
+            <path d="M12 8V12M12 16H12.01" stroke="#92400E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Important: Sealed box photos are required
+        </div>
+        <div class="warning-box-text">
+          These photos are necessary for insurance coverage and to protect you in case of shipping disputes. Without them, claims cannot be processed.
+        </div>
+      </div>
+
+      <button class="btn-primary" style="width: 100%; height: 48px;" onclick="closePhotoModal('photo-modal-step2')">
+        Add photos
+      </button>
+    </div>
+  </div>
+
+  <!-- Confirmation Modal for Order Delivery -->
+  <div class="confirmation-modal-overlay" id="confirm-delivery-modal">
+    <div class="confirmation-modal">
+      <div class="confirmation-modal-header">
+        <div class="confirmation-modal-title">Everything OK with your purchase?</div>
+      </div>
+      <div class="confirmation-modal-content">
+        <div class="confirmation-modal-text">
+          We'll release your payment to the seller, and you won't be able to refund or return your order.
+        </div>
+      </div>
+      <div class="confirmation-modal-actions">
+        <button class="btn-primary" onclick="confirmDelivery()">Everything is ok</button>
+        <button class="btn-secondary" onclick="closeConfirmDeliveryModal()">Back</button>
+      </div>
     </div>
   </div>
 
@@ -2384,6 +3157,129 @@
       } else {
         expanded.classList.remove('visible');
       }
+    }
+
+    // Unmanaged Modal Functions
+    let unmanagedModalCurrentStep = 1;
+
+    const unmanagedModalCtaText = {
+      1: 'Continue',
+      2: 'Confirm details'
+    };
+
+    function openUnmanagedConfirmSaleModal() {
+      unmanagedModalCurrentStep = 1;
+      updateUnmanagedModalStep();
+      document.getElementById('confirm-sale-unmanaged-panel').classList.add('active');
+      document.getElementById('subflow-wrapper').classList.add('subflow-active');
+    }
+
+    function closeUnmanagedConfirmSaleModal() {
+      document.getElementById('confirm-sale-unmanaged-panel').classList.remove('active');
+      document.getElementById('subflow-wrapper').classList.remove('subflow-active');
+    }
+
+    function handleUnmanagedModalBack() {
+      if (unmanagedModalCurrentStep > 1) {
+        unmanagedModalCurrentStep--;
+        updateUnmanagedModalStep();
+      } else {
+        closeUnmanagedConfirmSaleModal();
+      }
+    }
+
+    function handleUnmanagedModalNext() {
+      if (unmanagedModalCurrentStep < 2) {
+        unmanagedModalCurrentStep++;
+        updateUnmanagedModalStep();
+      } else {
+        // Final step - confirm and close modal, advance to next shipping step
+        closeUnmanagedConfirmSaleModal();
+        showStep('u-sale-confirmed');
+      }
+    }
+
+    function updateUnmanagedModalStep() {
+      // Hide all steps in unmanaged panel
+      const panel = document.getElementById('confirm-sale-unmanaged-panel');
+      panel.querySelectorAll('.modal-step').forEach(step => {
+        step.classList.remove('active');
+      });
+
+      // Show current step
+      const currentStepEl = panel.querySelector(`.modal-step[data-step="${unmanagedModalCurrentStep}"]`);
+      if (currentStepEl) {
+        currentStepEl.classList.add('active');
+      }
+
+      // Update CTA text
+      const ctaBtn = document.getElementById('unmanaged-modal-cta');
+      if (ctaBtn) {
+        ctaBtn.innerHTML = unmanagedModalCtaText[unmanagedModalCurrentStep] + (unmanagedModalCurrentStep < 2 ?
+          ` <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>` :
+          ` <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13.3 4.3L6 11.6L2.7 8.3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`);
+      }
+    }
+
+    function toggleUnmanagedAddressExpanded(value) {
+      const expanded = document.getElementById('unmanaged-address-expanded');
+      if (value.length > 3) {
+        expanded.classList.add('visible');
+      } else {
+        expanded.classList.remove('visible');
+      }
+    }
+
+    // Pack Order Modal Functions
+    function openPackOrderModal() {
+      document.getElementById('pack-order-panel').classList.add('active');
+      document.getElementById('subflow-wrapper').classList.add('subflow-active');
+    }
+
+    function closePackOrderModal() {
+      document.getElementById('pack-order-panel').classList.remove('active');
+      document.getElementById('subflow-wrapper').classList.remove('subflow-active');
+    }
+
+    function confirmPackOrder() {
+      // Close modal and advance to next step
+      closePackOrderModal();
+      showStep('order-packed');
+    }
+
+    // Unmanaged Pack and Send Order Modal Functions
+    function openPackSendOrderModal() {
+      document.getElementById('pack-send-order-panel').classList.add('active');
+      document.getElementById('subflow-wrapper').classList.add('subflow-active');
+    }
+
+    function closePackSendOrderModal() {
+      document.getElementById('pack-send-order-panel').classList.remove('active');
+      document.getElementById('subflow-wrapper').classList.remove('subflow-active');
+    }
+
+    // Photo Modal Functions
+    function openPhotoModal(modalId) {
+      document.getElementById(modalId).classList.add('active');
+    }
+
+    function closePhotoModal(modalId) {
+      document.getElementById(modalId).classList.remove('active');
+    }
+
+    // Confirmation Modal Functions
+    function openConfirmDeliveryModal() {
+      document.getElementById('confirm-delivery-modal').classList.add('active');
+    }
+
+    function closeConfirmDeliveryModal() {
+      document.getElementById('confirm-delivery-modal').classList.remove('active');
+    }
+
+    function confirmDelivery() {
+      closeConfirmDeliveryModal();
+      const nextStep = currentShippingType === 'managed' ? 'confirmed' : 'u-confirmed';
+      showStep(nextStep);
     }
 
     // Step order for building history
@@ -2933,6 +3829,22 @@
             actions: []
           }
         },
+        'packaging-reordered': {
+          seller: {
+            title: 'New packaging ordered',
+            body: 'We\'ve ordered a new packaging, due to delays with the previous shipment. You can track the new order below. Once the packaging arrives, you can reschedule the pickup.',
+            actions: [
+              { type: 'secondary', text: 'Track packaging' }
+            ]
+          },
+          buyer: {
+            title: 'New packaging ordered',
+            body: 'We\'ve ordered a new packaging for the seller, due to delays with the previous shipment. You can track the new shipment below. Once the packaging arrives, the seller will reschedule the pickup.',
+            actions: [
+              { type: 'secondary', text: 'Track packaging' }
+            ]
+          }
+        },
         'leave-review': {
           seller: {
             title: 'Leave a rating for {{name}}',
@@ -3351,10 +4263,22 @@
           const className = action.type === 'primary' ? 'btn-primary' : 'btn-secondary';
           const arrow = action.type === 'primary' ? `<svg viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>` : '';
 
-          // Add special onclick for "Confirm sale" button (managed shipping, seller, first step)
+          // Add special onclick for modal buttons
           let onclick = '';
           if (action.text === 'Confirm pick up address and date' && currentShippingType === 'managed' && currentPerspective === 'seller') {
             onclick = ' onclick="openConfirmSaleModal()"';
+          }
+          if (action.text === 'Confirm sale' && currentShippingType === 'unmanaged' && currentPerspective === 'seller') {
+            onclick = ' onclick="openUnmanagedConfirmSaleModal()"';
+          }
+          if (action.text === 'Pack the order' && currentShippingType === 'managed' && currentPerspective === 'seller') {
+            onclick = ' onclick="openPackOrderModal()"';
+          }
+          if (action.text === 'Pack and send the order' && currentShippingType === 'unmanaged' && currentPerspective === 'seller') {
+            onclick = ' onclick="openPackSendOrderModal()"';
+          }
+          if (action.text === 'Everything is ok' && currentPerspective === 'buyer') {
+            onclick = ' onclick="openConfirmDeliveryModal()"';
           }
 
           html += `<button class="${className}"${onclick}>${action.text}${arrow}</button>`;
@@ -3379,7 +4303,7 @@
         // Failure states
         'cancelled', 'pickup-unsuccessful', 'packaging-delayed', 'u-cancelled', 'u-failed',
         'sale-not-confirmed', 'u-sale-not-confirmed',
-        'packaging-delayed-24h', 'packaging-rescheduled',
+        'packaging-delayed-24h', 'packaging-rescheduled', 'packaging-reordered',
         // Delivery issues
         'failed-delivery',
         // Carrier updates
