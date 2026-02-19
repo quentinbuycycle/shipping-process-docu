@@ -1497,6 +1497,30 @@
       color: #1E40AF;
     }
 
+    .comms-item-type {
+      font-size: 9px;
+      font-weight: 500;
+      padding: 1px 5px;
+      border-radius: 3px;
+      margin-left: auto;
+      white-space: nowrap;
+    }
+
+    .comms-item-type.bike {
+      background: #FEF3C7;
+      color: #92400E;
+    }
+
+    .comms-item-type.part {
+      background: #DBEAFE;
+      color: #1E40AF;
+    }
+
+    .comms-item-type.all {
+      background: #F3F4F6;
+      color: #6B7280;
+    }
+
     .comms-card.status-broken,
     .comms-card.status-new,
     .comms-card.status-stopped {
@@ -4761,6 +4785,24 @@
 
     // ==================== COMMUNICATIONS PANEL DATA ====================
     // Notion page URL lookup for each email ID
+    // Item Type lookup: 'all' = both flows, 'bike' = managed only, 'part' = unmanaged only
+    // Emails not listed default to 'all'
+    const itemTypes = {
+      // Bike (managed only)
+      'PST-SOC-2': 'bike', 'PST-BOC-2': 'bike', 'PST-SOC-6': 'bike',
+      'PST-BBD-14': 'bike', 'PST-SPU-12': 'bike', 'PST-SPU-1': 'bike',
+      'PST-BBD-9': 'bike', 'PST-BBD-11': 'bike', 'PST-BBD-1': 'bike',
+      'CX-Return-S': 'bike',
+      'PST-BBD-5': 'bike', 'PST-SPU-9': 'bike',
+      'PST-BBD-6': 'bike', 'PST-BBD-13': 'bike', 'PST-BBD-15': 'bike', 'PST-BBD-7': 'bike',
+      // Part & Sport gear (unmanaged only)
+      'BP-PST-SOC-2': 'part', 'BP-PST-BOC-2': 'part',
+      'BP-PST-SSL-1': 'part', 'BP-PST-SDO-1': 'part',
+      'BP-PST-BBD-1': 'part', 'BP-PST-BBP-1': 'part', 'BP-PST-SMD-1': 'part'
+    };
+
+    const itemTypeLabels = { bike: 'Bike', part: 'Part / Sport gear', all: 'All' };
+
     const notionUrls = {
       'PST-SOC-1c': 'https://www.notion.so/buycycle/2f7c20c25fd280358ca4db4e4c365583',
       'PST-SOC-1_PU': 'https://www.notion.so/buycycle/2f7c20c25fd280778ba6e5b3c3f54f18',
@@ -5086,7 +5128,15 @@
     function renderCommsPanel(stepId) {
       const container = document.getElementById('comms-panel-body');
       const summaryContainer = document.getElementById('comms-summary-counts');
-      const comms = commsData[stepId] || [];
+      const rawComms = commsData[stepId] || [];
+
+      // Filter by item type: managed steps show 'all' + 'bike', unmanaged show 'all' + 'part'
+      const isUnmanaged = stepId.startsWith('u-');
+      const comms = rawComms.filter(c => {
+        const type = itemTypes[c.id] || 'all';
+        if (isUnmanaged) return type === 'all' || type === 'part';
+        return type === 'all' || type === 'bike';
+      });
 
       // Get step name from the sidebar
       const stepEl = document.querySelector(`.step-item[data-step="${stepId}"] .step-title`);
@@ -5124,11 +5174,14 @@
         const isInactive = comm.status && comm.status !== 'active';
         const statusClass = isInactive ? `status-${comm.status}` : '';
         const statusBadge = isInactive ? `<span class="comms-status-badge ${comm.status}">${comm.status}</span>` : '';
+        const commItemType = itemTypes[comm.id] || 'all';
+        const itemTypeTag = `<span class="comms-item-type ${commItemType}">${itemTypeLabels[commItemType]}</span>`;
 
         html += `<div class="comms-card ${statusClass}">
           <div class="comms-card-header">
             <span class="comms-card-id">${notionUrls[comm.id] ? `<a href="${notionUrls[comm.id]}" target="_blank" title="Open in Notion">${comm.id}</a>` : comm.id}${statusBadge}</span>
             <span class="comms-recipient ${recipientClass}">${recipientLabel}</span>
+            ${itemTypeTag}
           </div>
           <div class="comms-card-desc">${comm.desc}</div>
           <div class="comms-channels">`;
