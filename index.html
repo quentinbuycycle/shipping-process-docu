@@ -1348,6 +1348,288 @@
       flex: 1;
       height: 100%;
     }
+
+    /* ==================== COMMUNICATIONS PANEL ==================== */
+    .comms-panel {
+      width: 340px;
+      background: var(--bg-primary);
+      border-left: 1px solid var(--border-tertiary);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      height: 100vh;
+      position: sticky;
+      top: 0;
+      overflow: hidden;
+    }
+
+    .comms-panel-header {
+      padding: 20px;
+      border-bottom: 1px solid var(--border-tertiary);
+    }
+
+    .comms-panel-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--content-primary);
+      margin-bottom: 2px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .comms-panel-title svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    .comms-panel-subtitle {
+      font-size: 12px;
+      color: var(--content-tertiary);
+      line-height: 16px;
+    }
+
+    .comms-panel-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0;
+    }
+
+    .comms-step-name {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--content-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 16px 20px 8px;
+    }
+
+    .comms-card {
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--border-tertiary);
+      transition: background 0.15s ease;
+    }
+
+    .comms-card:hover {
+      background: var(--bg-secondary);
+    }
+
+    .comms-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+
+    .comms-card-id {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--content-primary);
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+      letter-spacing: -0.2px;
+    }
+
+    .comms-recipient {
+      font-size: 10px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 2px 6px;
+      border-radius: 3px;
+    }
+
+    .comms-recipient.seller {
+      background: #F0F4FF;
+      color: #3B5998;
+    }
+
+    .comms-recipient.buyer {
+      background: #FFF4E6;
+      color: #C2590A;
+    }
+
+    .comms-recipient.both {
+      background: #F0FFF4;
+      color: #276749;
+    }
+
+    .comms-status-badge {
+      font-size: 9px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 2px 5px;
+      border-radius: 3px;
+      margin-left: 4px;
+    }
+
+    .comms-status-badge.broken {
+      background: #FEE2E2;
+      color: #991B1B;
+    }
+
+    .comms-status-badge.new {
+      background: #EDE9FE;
+      color: #5B21B6;
+    }
+
+    .comms-status-badge.stopped {
+      background: #FEF3C7;
+      color: #92400E;
+    }
+
+    .comms-status-badge.ab-test {
+      background: #DBEAFE;
+      color: #1E40AF;
+    }
+
+    .comms-card.status-broken,
+    .comms-card.status-new,
+    .comms-card.status-stopped {
+      opacity: 0.55;
+      border-left: 3px solid #D1D5DB;
+      background: #FAFAFA;
+    }
+
+    .comms-card-desc {
+      font-size: 12px;
+      color: var(--content-secondary);
+      line-height: 16px;
+      margin-bottom: 6px;
+    }
+
+    .comms-channels {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    .comms-channel-tag {
+      font-size: 10px;
+      font-weight: 500;
+      padding: 2px 6px;
+      border-radius: 3px;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .comms-channel-tag svg {
+      width: 10px;
+      height: 10px;
+    }
+
+    .comms-channel-tag.email {
+      background: #EDF2F7;
+      color: #4A5568;
+    }
+
+    .comms-channel-tag.push {
+      background: #FED7E2;
+      color: #97266D;
+    }
+
+    .comms-channel-tag.admin {
+      background: #E9D8FD;
+      color: #6B46C1;
+    }
+
+    .comms-empty {
+      padding: 32px 20px;
+      text-align: center;
+    }
+
+    .comms-empty-icon {
+      width: 40px;
+      height: 40px;
+      margin: 0 auto 12px;
+      background: var(--bg-secondary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .comms-empty-icon svg {
+      width: 20px;
+      height: 20px;
+      color: var(--content-quartenary);
+    }
+
+    .comms-empty-title {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--content-tertiary);
+      margin-bottom: 4px;
+    }
+
+    .comms-empty-text {
+      font-size: 12px;
+      color: var(--content-quartenary);
+      line-height: 16px;
+    }
+
+    .comms-summary {
+      padding: 12px 20px;
+      border-top: 1px solid var(--border-tertiary);
+      background: var(--bg-secondary);
+      flex-shrink: 0;
+    }
+
+    .comms-summary-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .comms-summary-label {
+      font-size: 11px;
+      color: var(--content-tertiary);
+    }
+
+    .comms-summary-counts {
+      display: flex;
+      gap: 8px;
+    }
+
+    .comms-summary-count {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--content-secondary);
+    }
+
+    .comms-summary-count svg {
+      width: 12px;
+      height: 12px;
+    }
+
+    .comms-note {
+      padding: 8px 20px;
+      margin: 0;
+    }
+
+    .comms-note-inner {
+      padding: 8px 10px;
+      background: #FFFBEB;
+      border-radius: 6px;
+      font-size: 11px;
+      color: #92400E;
+      line-height: 15px;
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+    }
+
+    .comms-note-inner svg {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
   </style>
 </head>
 <body>
@@ -2922,6 +3204,26 @@
 
       </div><!-- end subflow-wrapper -->
     </div>
+
+    <!-- Communications Panel -->
+    <div class="comms-panel">
+      <div class="comms-panel-header">
+        <div class="comms-panel-title">
+          <svg viewBox="0 0 16 16" fill="none"><path d="M2 4C2 3.44772 2.44772 3 3 3H13C13.5523 3 14 3.44772 14 4V11C14 11.5523 13.5523 12 13 12H5L2 14.5V4Z" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 6.5H11" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M5 9H9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          Communications
+        </div>
+        <div class="comms-panel-subtitle">Emails, push &amp; admin messages per step</div>
+      </div>
+      <div class="comms-panel-body" id="comms-panel-body">
+        <!-- Dynamically populated -->
+      </div>
+      <div class="comms-summary" id="comms-summary">
+        <div class="comms-summary-row">
+          <span class="comms-summary-label">This step triggers:</span>
+          <div class="comms-summary-counts" id="comms-summary-counts"></div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Photo Upload Modal -->
@@ -4443,6 +4745,300 @@
       currentStep = type === 'managed' ? 'awaiting-sale' : 'u-awaiting-sale';
       showStep(currentStep);
     }
+
+    // ==================== COMMUNICATIONS PANEL DATA ====================
+    const commsData = {
+      // MANAGED SHIPPING
+      'awaiting-sale': [
+        { id: 'PST-SOC-1c', desc: 'Item sold, 48h to confirm the sale (Shipping)', recipient: 'seller', channels: ['email', 'push', 'admin'], status: 'active' },
+        { id: 'PST-SOC-1_PU', desc: 'Item sold, 48h to confirm the sale (Pickup)', recipient: 'seller', channels: ['email', 'push', 'admin'], status: 'active' }
+      ],
+      'sale-confirmed': [
+        { id: 'PST-SOC-2', desc: 'Sale confirmed (Bike/Shipping)', recipient: 'seller', channels: ['email', 'push', 'admin'], status: 'active' },
+        { id: 'PST-BOC-2', desc: 'Order confirmed (Bike/Shipping)', recipient: 'buyer', channels: ['email', 'push', 'admin'], status: 'active' },
+        { id: 'PST-SOC-4', desc: 'Sale confirmed (Pickup)', recipient: 'seller', channels: ['email', 'push', 'admin'], status: 'active' },
+        { id: 'PST-BOC-4', desc: 'Order confirmed (Pickup)', recipient: 'buyer', channels: ['email', 'push', 'admin'], status: 'active' },
+        { id: 'BP-PST-SOC-2', desc: 'Order confirmed (Part)', recipient: 'seller', channels: ['email', 'push', 'admin'], status: 'active' },
+        { id: 'BP-PST-BOC-2', desc: 'Order confirmed (Part/Shipping)', recipient: 'buyer', channels: ['email', 'push', 'admin'], status: 'active' },
+        { id: 'PST-SOC-6', desc: 'Seller invoicing infos', recipient: 'seller', channels: ['email', 'push'], status: 'active' }
+      ],
+      'payment-info-confirmed': [],
+      'packaging-preparation': [],
+      'packaging-shipped': [],
+      'packaging-delivered': [
+        { id: 'PST-BBD-14', desc: 'Packaging arrived and next steps', recipient: 'seller', channels: ['email', 'admin'], status: 'active' }
+      ],
+      'packing': [
+        { id: 'PST-SPU-12', desc: 'Reminder: upload pics or download label', recipient: 'seller', channels: ['email', 'push'], status: 'active', note: 'Sent at 3pm day before pickup' }
+      ],
+      'order-packed': [],
+      'awaiting-pickup': [],
+      'in-transit': [
+        { id: 'PST-BBD-2', desc: 'Order is in transit', recipient: 'buyer', channels: ['email', 'push', 'admin'], status: 'active' },
+        { id: 'PST-SPU-11', desc: 'In transit notification', recipient: 'seller', channels: [], status: 'broken', note: 'Email exists but is broken/stopped — no comms sent' },
+        { id: 'PST-BBD-9', desc: '2-leg: in transit to hub', recipient: 'buyer', channels: ['email', 'push'], status: 'active' }
+      ],
+      'delivered': [
+        { id: 'BP-PST-BBD-1', desc: 'Order arrived, 48h to check condition', recipient: 'buyer', channels: ['email', 'push', 'admin'], status: 'active' },
+        { id: 'PST-SPU-10', desc: 'Order arrived with buyer', recipient: 'seller', channels: ['email', 'push', 'admin'], status: 'active' }
+      ],
+      'confirmed': [
+        { id: 'PST-SPU-6', desc: 'Withdraw your money', recipient: 'seller', channels: ['email', 'push', 'admin'], status: 'active' },
+        { id: 'PST-SPO-6', desc: 'Payment on the way (Stripe)', recipient: 'seller', channels: ['email', 'push', 'admin'], status: 'new', note: 'Status: new — not yet live' }
+      ],
+      'leave-review': [],
+      'review-added': [],
+      'out-for-delivery': [
+        { id: 'CX-Notif-S', desc: 'Chat Update Notification', recipient: 'seller', channels: ['email', 'admin'], status: 'active' },
+        { id: 'CX-Notif-B', desc: 'Chat Update Notification', recipient: 'buyer', channels: ['email', 'admin'], status: 'active' }
+      ],
+      'at-post-office': [
+        { id: 'CX-Notif-S', desc: 'Chat Update Notification', recipient: 'seller', channels: ['email', 'admin'], status: 'active' },
+        { id: 'CX-Notif-B', desc: 'Chat Update Notification', recipient: 'buyer', channels: ['email', 'admin'], status: 'active' }
+      ],
+      'seller-to-hub': [],
+      'at-hub': [],
+      'hub-to-buyer': [
+        { id: 'PST-BBD-2', desc: 'In transit from hub to buyer', recipient: 'buyer', channels: ['email', 'push', 'admin'], status: 'active' }
+      ],
+      'delay-5day': [
+        { id: 'CX-Notif-S', desc: 'Shipping delay notification (+5 days)', recipient: 'seller', channels: ['email', 'admin'], status: 'active' },
+        { id: 'CX-Notif-B', desc: 'Shipping delay notification (+5 days)', recipient: 'buyer', channels: ['email', 'admin'], status: 'active' }
+      ],
+      'delay-10day': [],
+      'return-preparing': [],
+      'return-ready': [],
+      'return-missed-pickup': [],
+      'return-in-transit': [
+        { id: 'CX-Return-S', desc: 'Return Shipment Tracking', recipient: 'seller', channels: ['email', 'admin'], status: 'active' }
+      ],
+      'return-in-transit-2leg-leg1': [
+        { id: 'CX-Return-2L', desc: 'Return Tracking (2nd Leg)', recipient: 'buyer', channels: ['email', 'admin'], status: 'active' }
+      ],
+      'return-in-transit-2leg-leg2': [
+        { id: 'CX-Return-2L', desc: 'Return Tracking (2nd Leg)', recipient: 'buyer', channels: ['email', 'admin'], status: 'active' }
+      ],
+      'return-delivered': [],
+      'lost-investigation': [
+        { id: 'CX-Notif-S', desc: 'Lost bike investigation status', recipient: 'seller', channels: ['email', 'admin'], status: 'active' },
+        { id: 'CX-Notif-B', desc: 'Lost bike investigation status', recipient: 'buyer', channels: ['email', 'admin'], status: 'active' }
+      ],
+      'lost-found': [],
+      'lost-refunded': [],
+      'unauthorized-return': [
+        { id: 'CX-Notif-S', desc: 'Unauthorized return notification', recipient: 'seller', channels: ['email', 'admin'], status: 'active' },
+        { id: 'CX-Notif-B', desc: 'Unauthorized return notification', recipient: 'buyer', channels: ['email', 'admin'], status: 'active' }
+      ],
+      'claim-opened': [
+        { id: 'CLAIM-B-1', desc: 'Claim submitted (BPC)', recipient: 'buyer', channels: ['email', 'push', 'admin'], status: 'active' },
+        { id: 'CLAIM-S-1', desc: 'Claim raised — buyer handed in BPC', recipient: 'seller', channels: ['email', 'push', 'admin'], status: 'active' }
+      ],
+      'claim-completed': [
+        { id: 'CLAIM-B-3', desc: 'Compensation request accepted', recipient: 'buyer', channels: ['email', 'push', 'admin'], status: 'active' },
+        { id: 'CLAIM-S-4', desc: 'Claim cancelled by buyer', recipient: 'seller', channels: ['email', 'push', 'admin'], status: 'active' }
+      ],
+      'ce-contacts-seller': [],
+      'claim-transaction-cancelled': [
+        { id: 'BP-PST-SMD-1', desc: 'Sale cancelled, not shipped in time', recipient: 'seller', channels: ['email', 'push', 'admin'], status: 'active' }
+      ],
+      'failed-delivery': [
+        { id: 'PST-BBD-17', desc: 'Missed Delivery (1st & 2nd attempts)', recipient: 'buyer', channels: ['email', 'push', 'admin'], status: 'active' }
+      ],
+      'cancelled': [
+        { id: 'PST-BOD-1', desc: 'Order declined by seller or auto after 48h', recipient: 'buyer', channels: ['email', 'push', 'admin'], status: 'active' }
+      ],
+      'pickup-unsuccessful': [
+        { id: 'PST-BBD-5', desc: 'Missed Pickup notification', recipient: 'buyer', channels: ['email', 'push', 'admin'], status: 'active' },
+        { id: 'PST-SPU-9', desc: 'Missed Pickup notification', recipient: 'seller', channels: ['email', 'push', 'admin'], status: 'active' }
+      ],
+      'packaging-delayed': [
+        { id: 'PST-BBD-6', desc: 'Packaging delivery delayed', recipient: 'buyer', channels: ['email', 'push', 'admin'], status: 'active' },
+        { id: 'PST-BBD-13', desc: 'Packaging delayed, pickup stopped', recipient: 'seller', channels: ['email', 'admin'], status: 'active' }
+      ],
+      'sale-not-confirmed': [
+        { id: 'PST-BOD-1', desc: 'Order declined (auto 48h timeout)', recipient: 'buyer', channels: ['email', 'push', 'admin'], status: 'active' }
+      ],
+      'packaging-delayed-24h': [
+        { id: 'PST-BBD-6', desc: 'Packaging delay notification', recipient: 'buyer', channels: ['email', 'push', 'admin'], status: 'active' }
+      ],
+      'packaging-rescheduled': [],
+      'packaging-reordered': [],
+
+      // UNMANAGED SHIPPING
+      'u-awaiting-sale': [
+        { id: 'PST-SOC-1c', desc: 'Item sold, 48h to confirm the sale', recipient: 'seller', channels: ['email', 'push', 'admin'], status: 'active' }
+      ],
+      'u-sale-confirmed': [
+        { id: 'PST-SOC-2', desc: 'Sale confirmed', recipient: 'seller', channels: ['email', 'push', 'admin'], status: 'active' },
+        { id: 'PST-BOC-2', desc: 'Order confirmed', recipient: 'buyer', channels: ['email', 'push', 'admin'], status: 'active' }
+      ],
+      'u-payment-info-confirmed': [],
+      'u-label-downloaded': [
+        { id: 'PST-SPU-12', desc: 'Reminder: upload pics or download label', recipient: 'seller', channels: ['email', 'push'], status: 'active', note: 'Sent at 3pm day before pickup' }
+      ],
+      'u-packing': [],
+      'u-in-transit': [
+        { id: 'PST-BBD-2', desc: 'Order is in transit', recipient: 'buyer', channels: ['email', 'push', 'admin'], status: 'active' }
+      ],
+      'u-delivered': [
+        { id: 'BP-PST-BBD-1', desc: 'Order arrived, 48h to check condition', recipient: 'buyer', channels: ['email', 'push', 'admin'], status: 'active' },
+        { id: 'PST-SPU-10', desc: 'Order arrived with buyer', recipient: 'seller', channels: ['email', 'push', 'admin'], status: 'active' }
+      ],
+      'u-confirmed': [
+        { id: 'PST-SPU-6', desc: 'Withdraw your money', recipient: 'seller', channels: ['email', 'push', 'admin'], status: 'active' },
+        { id: 'PST-SPO-6', desc: 'Payment on the way (Stripe)', recipient: 'seller', channels: ['email', 'push', 'admin'], status: 'new', note: 'Status: new — not yet live' }
+      ],
+      'u-out-for-delivery': [
+        { id: 'CX-Notif', desc: 'Chat Update Notification', recipient: 'both', channels: ['email', 'admin'], status: 'active' }
+      ],
+      'u-at-post-office': [
+        { id: 'CX-Notif', desc: 'Chat Update Notification', recipient: 'both', channels: ['email', 'admin'], status: 'active' }
+      ],
+      'u-delay-5day': [
+        { id: 'CX-Notif', desc: 'Shipping delay notification', recipient: 'both', channels: ['email', 'admin'], status: 'active' }
+      ],
+      'u-return-preparing': [],
+      'u-return-ready': [],
+      'u-return-missed-pickup': [],
+      'u-return-in-transit': [
+        { id: 'CX-Return-S', desc: 'Return Shipment Tracking', recipient: 'seller', channels: ['email', 'admin'], status: 'active' }
+      ],
+      'u-return-in-transit-2leg-leg1': [
+        { id: 'CX-Return-2L', desc: 'Return Tracking (2nd Leg)', recipient: 'buyer', channels: ['email', 'admin'], status: 'active' }
+      ],
+      'u-return-in-transit-2leg-leg2': [
+        { id: 'CX-Return-2L', desc: 'Return Tracking (2nd Leg)', recipient: 'buyer', channels: ['email', 'admin'], status: 'active' }
+      ],
+      'u-return-delivered': [],
+      'u-lost-bike-investigation': [
+        { id: 'CX-Notif', desc: 'Lost bike investigation status', recipient: 'both', channels: ['email', 'admin'], status: 'active' }
+      ],
+      'u-lost-bike-found': [],
+      'u-lost-bike-refunded': [],
+      'u-unauthorized-return': [
+        { id: 'CX-Notif', desc: 'Unauthorized return notification', recipient: 'both', channels: ['email', 'admin'], status: 'active' }
+      ],
+      'u-claim-opened': [
+        { id: 'CLAIM-B-1', desc: 'Claim submitted (BPC)', recipient: 'buyer', channels: ['email', 'push', 'admin'], status: 'active' },
+        { id: 'CLAIM-S-1', desc: 'Claim raised', recipient: 'seller', channels: ['email', 'push', 'admin'], status: 'active' }
+      ],
+      'u-claim-completed': [
+        { id: 'CLAIM-B-3', desc: 'Compensation request accepted', recipient: 'buyer', channels: ['email', 'push', 'admin'], status: 'active' },
+        { id: 'CLAIM-S-4', desc: 'Claim cancelled by buyer', recipient: 'seller', channels: ['email', 'push', 'admin'], status: 'active' }
+      ],
+      'u-ce-contacts-seller': [],
+      'u-claim-transaction-cancelled': [
+        { id: 'BP-PST-SMD-1', desc: 'Sale cancelled, not shipped in time', recipient: 'seller', channels: ['email', 'push', 'admin'], status: 'active' }
+      ],
+      'u-cancelled': [
+        { id: 'PST-BOD-1', desc: 'Order declined', recipient: 'buyer', channels: ['email', 'push', 'admin'], status: 'active' }
+      ],
+      'u-failed': [
+        { id: 'PST-BBD-17', desc: 'Missed Delivery', recipient: 'buyer', channels: ['email', 'push', 'admin'], status: 'active' }
+      ],
+      'u-sale-not-confirmed': [
+        { id: 'PST-BOD-1', desc: 'Order declined (auto 48h timeout)', recipient: 'buyer', channels: ['email', 'push', 'admin'], status: 'active' }
+      ]
+    };
+
+    const channelIcons = {
+      email: '<svg viewBox="0 0 12 12" fill="none"><rect x="1" y="2.5" width="10" height="7" rx="1" stroke="currentColor" stroke-width="1.1"/><path d="M1 3.5L6 7L11 3.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+      push: '<svg viewBox="0 0 12 12" fill="none"><path d="M4.5 9.5C4.5 10.3284 5.17157 11 6 11C6.82843 11 7.5 10.3284 7.5 9.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/><path d="M2.5 5C2.5 3.067 4.067 1.5 6 1.5C7.933 1.5 9.5 3.067 9.5 5V7L10.5 9H1.5L2.5 7V5Z" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+      admin: '<svg viewBox="0 0 12 12" fill="none"><path d="M1.5 3C1.5 2.44772 1.94772 2 2.5 2H9.5C10.0523 2 10.5 2.44772 10.5 3V8C10.5 8.55228 10.0523 9 9.5 9H4L1.5 10.5V3Z" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+    };
+
+    const channelLabels = { email: 'Email', push: 'Push', admin: 'Admin msg' };
+
+    function renderCommsPanel(stepId) {
+      const container = document.getElementById('comms-panel-body');
+      const summaryContainer = document.getElementById('comms-summary-counts');
+      const comms = commsData[stepId] || [];
+
+      // Get step name from the sidebar
+      const stepEl = document.querySelector(`.step-item[data-step="${stepId}"] .step-title`);
+      const stepName = stepEl ? stepEl.textContent : stepId;
+
+      if (comms.length === 0) {
+        container.innerHTML = `
+          <div class="comms-step-name">${stepName}</div>
+          <div class="comms-empty">
+            <div class="comms-empty-icon">
+              <svg viewBox="0 0 20 20" fill="none"><path d="M4 7C4 5.34315 5.34315 4 7 4H13C14.6569 4 16 5.34315 16 7V11C16 12.6569 14.6569 14 13 14H8L4 17V7Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 8H12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M8 11H10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </div>
+            <div class="comms-empty-title">No automated comms</div>
+            <div class="comms-empty-text">No email, push, or admin message is triggered at this step.</div>
+          </div>`;
+        summaryContainer.innerHTML = '<span style="font-size: 11px; color: var(--content-quartenary);">None</span>';
+        return;
+      }
+
+      let html = `<div class="comms-step-name">${stepName}</div>`;
+
+      // Check for notes
+      const hasNote = comms.some(c => c.note);
+      const hasEmptyChannels = comms.some(c => c.channels.length === 0);
+
+      // Separate active vs inactive
+      const activeComms = comms.filter(c => !c.status || c.status === 'active');
+      const inactiveComms = comms.filter(c => c.status && c.status !== 'active');
+
+      const allSorted = [...activeComms, ...inactiveComms];
+
+      allSorted.forEach(comm => {
+        const recipientClass = comm.recipient;
+        const recipientLabel = comm.recipient === 'both' ? 'Both' : comm.recipient.charAt(0).toUpperCase() + comm.recipient.slice(1);
+        const isInactive = comm.status && comm.status !== 'active';
+        const statusClass = isInactive ? `status-${comm.status}` : '';
+        const statusBadge = isInactive ? `<span class="comms-status-badge ${comm.status}">${comm.status}</span>` : '';
+
+        html += `<div class="comms-card ${statusClass}">
+          <div class="comms-card-header">
+            <span class="comms-card-id">${comm.id}${statusBadge}</span>
+            <span class="comms-recipient ${recipientClass}">${recipientLabel}</span>
+          </div>
+          <div class="comms-card-desc">${comm.desc}</div>
+          <div class="comms-channels">`;
+
+        if (comm.channels.length > 0) {
+          comm.channels.forEach(ch => {
+            html += `<span class="comms-channel-tag ${ch}">${channelIcons[ch]} ${channelLabels[ch]}</span>`;
+          });
+        } else {
+          html += `<span style="font-size: 10px; color: var(--content-quartenary); font-style: italic;">No active channel</span>`;
+        }
+
+        html += `</div>`;
+
+        if (comm.note) {
+          html += `<div style="margin-top: 6px; font-size: 10px; color: #92400E; background: #FFFBEB; padding: 3px 6px; border-radius: 3px; display: inline-block;">⚠ ${comm.note}</div>`;
+        }
+
+        html += `</div>`;
+      });
+
+      container.innerHTML = html;
+
+      // Summary counts (only active comms)
+      let emailCount = 0, pushCount = 0, adminCount = 0;
+      comms.filter(c => !c.status || c.status === 'active').forEach(c => {
+        if (c.channels.includes('email')) emailCount++;
+        if (c.channels.includes('push')) pushCount++;
+        if (c.channels.includes('admin')) adminCount++;
+      });
+
+      let summaryHtml = '';
+      if (emailCount > 0) summaryHtml += `<span class="comms-summary-count">${channelIcons.email} ${emailCount}</span>`;
+      if (pushCount > 0) summaryHtml += `<span class="comms-summary-count">${channelIcons.push} ${pushCount}</span>`;
+      if (adminCount > 0) summaryHtml += `<span class="comms-summary-count">${channelIcons.admin} ${adminCount}</span>`;
+      summaryContainer.innerHTML = summaryHtml || '<span style="font-size: 11px; color: var(--content-quartenary);">None</span>';
+    }
+
+    // Hook into showStep to update comms panel
+    const _originalShowStep = showStep;
+    showStep = function(stepId) {
+      _originalShowStep(stepId);
+      renderCommsPanel(stepId);
+    };
 
     // Initialize
     document.addEventListener('DOMContentLoaded', () => {
