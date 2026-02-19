@@ -1430,6 +1430,19 @@
       letter-spacing: -0.2px;
     }
 
+    .comms-card-id a {
+      color: inherit;
+      text-decoration: none;
+      border-bottom: 1px dashed var(--content-quartenary);
+      transition: border-color 0.15s, color 0.15s;
+    }
+
+    .comms-card-id a:hover {
+      color: #3B5998;
+      border-bottom-color: #3B5998;
+      border-bottom-style: solid;
+    }
+
     .comms-recipient {
       font-size: 10px;
       font-weight: 500;
@@ -4747,6 +4760,73 @@
     }
 
     // ==================== COMMUNICATIONS PANEL DATA ====================
+    // Notion page URL lookup for each email ID
+    const notionUrls = {
+      'PST-SOC-1c': 'https://www.notion.so/buycycle/2f7c20c25fd280358ca4db4e4c365583',
+      'PST-SOC-1_PU': 'https://www.notion.so/buycycle/2f7c20c25fd280778ba6e5b3c3f54f18',
+      'PST-BOC-1': 'https://www.notion.so/buycycle/2f5c20c25fd28046bd8cf7700ee3824a',
+      'PST-SOC-5': 'https://www.notion.so/buycycle/2f7c20c25fd2806aaedec10fc21758bd',
+      'PST-SOC-2': 'https://www.notion.so/buycycle/2f7c20c25fd28041aee0d92dd52a3fde',
+      'PST-BOC-2': 'https://www.notion.so/buycycle/2f5c20c25fd280b39623ed9784a1f602',
+      'PST-SOC-4': 'https://www.notion.so/buycycle/2f7c20c25fd280db8714c4277dc3f213',
+      'PST-BOC-4': 'https://www.notion.so/buycycle/2f5c20c25fd2804a87b1ce051da85b9b',
+      'BP-PST-SOC-2': 'https://www.notion.so/buycycle/2f8c20c25fd2807bb10ee0d96589c88e',
+      'BP-PST-BOC-2': 'https://www.notion.so/buycycle/2f5c20c25fd2800d9752fc7bdb742ed9',
+      'PST-SOC-6': 'https://www.notion.so/buycycle/2f7c20c25fd2806b9723ce1cc3cb4496',
+      'PST-BBD-14': 'https://www.notion.so/buycycle/2f7c20c25fd28060ac5ee0cc8e2ea750',
+      'PST-SPU-12': 'https://www.notion.so/buycycle/2f7c20c25fd2809bb560ddfcba073fe4',
+      'BP-PST-SSL-1': 'https://www.notion.so/buycycle/2f7c20c25fd2807e8488fe3124bc3eaf',
+      'BP-PST-SDO-1': 'https://www.notion.so/buycycle/2f7c20c25fd280449b6dc35aa3fe12cc',
+      'PST-SPU-1': 'https://www.notion.so/buycycle/2f7c20c25fd28070a341eb4c5a199bbc',
+      'PST-BBD-2': 'https://www.notion.so/buycycle/2f6c20c25fd280858d3bc0c120d13fd3',
+      'PST-SPU-11': 'https://www.notion.so/buycycle/2f7c20c25fd280b9bb3ad056ba35eeb2',
+      'PST-BBD-9': 'https://www.notion.so/buycycle/2ffc20c25fd28007be5df4c071427f40',
+      'PST-BBD-11': 'https://www.notion.so/buycycle/2f6c20c25fd280cd9adaf9691ec3ec25',
+      'BP-PST-BBD-1': 'https://www.notion.so/buycycle/2f6c20c25fd280668e98f99fee07070a',
+      'PST-SPU-10': 'https://www.notion.so/buycycle/2f7c20c25fd2809cbae8d20e91829d17',
+      'PST-BBD-1': 'https://www.notion.so/buycycle/2f6c20c25fd280edad1feb1a5da712bb',
+      'BP-PST-BBP-1': 'https://www.notion.so/buycycle/2f6c20c25fd280cd8627fb19c5b3d018',
+      'PST-SPU-6': 'https://www.notion.so/buycycle/2f7c20c25fd2807a948dcc55877a7281',
+      'PST-SPO-3': 'https://www.notion.so/buycycle/2f7c20c25fd2805b83c6ce62a2dd63c8',
+      'PST-SPO-6': 'https://www.notion.so/buycycle/305c20c25fd280498609fae8e0737c0e',
+      'PST-SPO-7': 'https://www.notion.so/buycycle/305c20c25fd280469120ccfe2bb23c59',
+      'PST-SPO-2': 'https://www.notion.so/buycycle/2f7c20c25fd28075958cc0e5ed002d67',
+      'CX-Notif-S': 'https://www.notion.so/buycycle/2f8c20c25fd280fa9464c36cc61e6394',
+      'CX-Notif-B': 'https://www.notion.so/buycycle/2f8c20c25fd2807185b9cf8ec7e80248',
+      'CX-Notif': 'https://www.notion.so/buycycle/2f8c20c25fd2807185b9cf8ec7e80248',
+      'CX-PO-Rem-S': 'https://www.notion.so/buycycle/2f8c20c25fd28075b048c218f5d05b1e',
+      'CX-PO-Rem-B': 'https://www.notion.so/buycycle/2f8c20c25fd280949cdcf802d34cb015',
+      'CX-PO-Rem': 'https://www.notion.so/buycycle/2f8c20c25fd280949cdcf802d34cb015',
+      'CX-Return-S': 'https://www.notion.so/buycycle/2f8c20c25fd28021a61bc831cbe76dd4',
+      'CX-Return-B': 'https://www.notion.so/buycycle/2f8c20c25fd28005bf8fc36d996e54e8',
+      'CX-Return-2L-B1': 'https://www.notion.so/buycycle/2f8c20c25fd280249681eb5b32d81aa2',
+      'CX-Return-2L-S1': 'https://www.notion.so/buycycle/2f8c20c25fd280bfba68dd80e9721a1d',
+      'CX-Return-2L-B2': 'https://www.notion.so/buycycle/2f8c20c25fd28008a850e0809f98ed23',
+      'CX-Return-2L-S2': 'https://www.notion.so/buycycle/2f8c20c25fd280ba837aede09866bf39',
+      'CX-Return-2L': 'https://www.notion.so/buycycle/2f8c20c25fd28008a850e0809f98ed23',
+      'CLAIM-B-1': 'https://www.notion.so/buycycle/2f6c20c25fd280bbb5e8d80d00256804',
+      'CLAIM-S-1': 'https://www.notion.so/buycycle/2f7c20c25fd280369b92f16c31bc0911',
+      'CLAIM-B-2': 'https://www.notion.so/buycycle/2f6c20c25fd280ed83a7f924908b4282',
+      'CLAIM-S-2': 'https://www.notion.so/buycycle/2f7c20c25fd2804ba547e99ba155936e',
+      'CLAIM-B-3': 'https://www.notion.so/buycycle/2f6c20c25fd2800aafeed6ef65c01774',
+      'CLAIM-S-3': 'https://www.notion.so/buycycle/2f7c20c25fd28078ba76dd2218e6d6f9',
+      'CLAIM-S-4': 'https://www.notion.so/buycycle/2f7c20c25fd280a8a9f7f63f8608d86a',
+      'BP-PST-SMD-1': 'https://www.notion.so/buycycle/2f7c20c25fd280ba8768c2f10313cdf9',
+      'PST-BBD-17': 'https://www.notion.so/buycycle/2f6c20c25fd2800c9df5ec519d90fa79',
+      'PST-BOD-1': 'https://www.notion.so/buycycle/2f5c20c25fd280cba3d4fc3ff420bd27',
+      'PST-SOD-1': 'https://www.notion.so/buycycle/2f7c20c25fd28062b4f2ecb83dc1f396',
+      'PST-BOD-2': 'https://www.notion.so/buycycle/2f6c20c25fd280a3a550ceb79a6bbab6',
+      'PST-SOD-2': 'https://www.notion.so/buycycle/2f7c20c25fd280199446ffcc3b9f8fed',
+      'PST-SOD-4': 'https://www.notion.so/buycycle/2f7c20c25fd280169b62f73063db4235',
+      'PST-SOD-5': 'https://www.notion.so/buycycle/2ffc20c25fd280e7bec4daaeb0ab990b',
+      'PST-BBD-5': 'https://www.notion.so/buycycle/2f6c20c25fd280829f4cf33b6c9ce93d',
+      'PST-SPU-9': 'https://www.notion.so/buycycle/2f7c20c25fd2806fa8b9e8e11b590655',
+      'PST-BBD-6': 'https://www.notion.so/buycycle/2f5c20c25fd280f8b2b4d644f6a25f15',
+      'PST-BBD-13': 'https://www.notion.so/buycycle/2f7c20c25fd280d2b93de9bb1038705a',
+      'PST-BBD-15': 'https://www.notion.so/buycycle/2f7c20c25fd280a8bdb1e1d22c2fcd0c',
+      'PST-BBD-7': 'https://www.notion.so/buycycle/2f6c20c25fd280d9bbccd49acd8211b7'
+    };
+
     const commsData = {
       // ═══════════════════════════════════════
       // MANAGED SHIPPING
@@ -5047,7 +5127,7 @@
 
         html += `<div class="comms-card ${statusClass}">
           <div class="comms-card-header">
-            <span class="comms-card-id">${comm.id}${statusBadge}</span>
+            <span class="comms-card-id">${notionUrls[comm.id] ? `<a href="${notionUrls[comm.id]}" target="_blank" title="Open in Notion">${comm.id}</a>` : comm.id}${statusBadge}</span>
             <span class="comms-recipient ${recipientClass}">${recipientLabel}</span>
           </div>
           <div class="comms-card-desc">${comm.desc}</div>
