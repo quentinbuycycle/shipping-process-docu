@@ -4751,7 +4751,8 @@
       // MANAGED SHIPPING
       'awaiting-sale': [
         { id: 'PST-SOC-1c', desc: 'Item sold, 48h to confirm the sale (Shipping)', recipient: 'seller', channels: ['email', 'push', 'admin'], status: 'active' },
-        { id: 'PST-SOC-1_PU', desc: 'Item sold, 48h to confirm the sale (Pickup)', recipient: 'seller', channels: ['email', 'push', 'admin'], status: 'active' }
+        { id: 'PST-SOC-1_PU', desc: 'Item sold, 48h to confirm the sale (Pickup)', recipient: 'seller', channels: ['email', 'push', 'admin'], status: 'active' },
+        { id: 'PST-BOC-1', desc: 'Order placed, waiting for seller confirmation', recipient: 'buyer', channels: ['email', 'push', 'admin'], status: 'active' }
       ],
       'sale-confirmed': [
         { id: 'PST-SOC-2', desc: 'Sale confirmed (Bike/Shipping)', recipient: 'seller', channels: ['email', 'push', 'admin'], status: 'active' },
@@ -4866,7 +4867,8 @@
 
       // UNMANAGED SHIPPING
       'u-awaiting-sale': [
-        { id: 'PST-SOC-1c', desc: 'Item sold, 48h to confirm the sale', recipient: 'seller', channels: ['email', 'push', 'admin'], status: 'active' }
+        { id: 'PST-SOC-1c', desc: 'Item sold, 48h to confirm the sale', recipient: 'seller', channels: ['email', 'push', 'admin'], status: 'active' },
+        { id: 'PST-BOC-1', desc: 'Order placed, waiting for seller confirmation', recipient: 'buyer', channels: ['email', 'push', 'admin'], status: 'active' }
       ],
       'u-sale-confirmed': [
         { id: 'PST-SOC-2', desc: 'Sale confirmed', recipient: 'seller', channels: ['email', 'push', 'admin'], status: 'active' },
