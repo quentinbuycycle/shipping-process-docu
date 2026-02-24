@@ -2063,16 +2063,6 @@
               <div class="step-description">Investigation concluded</div>
             </div>
           </div>
-          <div class="step-item" data-step="ce-contacts-seller" data-index="-1" onclick="showStep('ce-contacts-seller')">
-            <div class="step-indicator">
-              <span class="step-number">-</span>
-              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </div>
-            <div class="step-content">
-              <div class="step-title">CE Contacts Seller</div>
-              <div class="step-description">Trying to reach seller</div>
-            </div>
-          </div>
           <div class="step-item" data-step="claim-transaction-cancelled" data-index="-1" onclick="showStep('claim-transaction-cancelled')">
             <div class="step-indicator">
               <span class="step-number">-</span>
@@ -2426,16 +2416,6 @@
             <div class="step-content">
               <div class="step-title">Claim Completed</div>
               <div class="step-description">Investigation concluded</div>
-            </div>
-          </div>
-          <div class="step-item" data-step="u-ce-contacts-seller" data-index="-1" onclick="showStep('u-ce-contacts-seller')">
-            <div class="step-indicator">
-              <span class="step-number">-</span>
-              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 4" stroke="#146C43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </div>
-            <div class="step-content">
-              <div class="step-title">CE Contacts Seller</div>
-              <div class="step-description">Trying to reach seller</div>
             </div>
           </div>
           <div class="step-item" data-step="u-claim-transaction-cancelled" data-index="-1" onclick="showStep('u-claim-transaction-cancelled')">
@@ -4117,18 +4097,6 @@
             actions: []
           }
         },
-        'ce-contacts-seller': {
-          seller: {
-            title: 'We are trying to reach you',
-            body: 'Please check your emails and spam folder for communication from claims@buycycle.com. If we do not hear from you within 3 business days, we will need to close the case.',
-            actions: []
-          },
-          buyer: {
-            title: 'We are trying to reach you',
-            body: 'Please check your emails and spam folder for communication from claims@buycycle.com. If we do not hear from you within 3 business days, we will need to close the case.',
-            actions: []
-          }
-        },
         'claim-transaction-cancelled': {
           seller: {
             title: 'Transaction canceled',
@@ -4548,18 +4516,6 @@
             actions: []
           }
         },
-        'u-ce-contacts-seller': {
-          seller: {
-            title: 'We are trying to reach you',
-            body: 'Please check your emails and spam folder for communication from claims@buycycle.com. If we do not hear from you within 3 business days, we will need to close the case.',
-            actions: []
-          },
-          buyer: {
-            title: 'We are trying to reach you',
-            body: 'Please check your emails and spam folder for communication from claims@buycycle.com. If we do not hear from you within 3 business days, we will need to close the case.',
-            actions: []
-          }
-        },
         'u-claim-transaction-cancelled': {
           seller: {
             title: 'Transaction canceled',
@@ -4664,8 +4620,8 @@
         // Unauthorized return
         'unauthorized-return', 'u-unauthorized-return',
         // Claims
-        'claim-opened', 'claim-completed', 'ce-contacts-seller', 'claim-transaction-cancelled',
-        'u-claim-opened', 'u-claim-completed', 'u-ce-contacts-seller', 'u-claim-transaction-cancelled',
+        'claim-opened', 'claim-completed', 'claim-transaction-cancelled',
+        'u-claim-opened', 'u-claim-completed', 'u-claim-transaction-cancelled',
         // Additional managed steps
         'packaging-preparation', 'leave-review', 'review-added'
       ];
@@ -4981,7 +4937,6 @@
         { id: 'CLAIM-S-3', desc: 'Buyer accepted seller offer', recipient: 'seller', channels: ['email', 'push', 'admin'], status: 'active' },
         { id: 'CLAIM-S-4', desc: 'Claim cancelled by buyer', recipient: 'seller', channels: ['email', 'push', 'admin'], status: 'active' }
       ],
-      'ce-contacts-seller': [],
       'claim-transaction-cancelled': [
         { id: 'BP-PST-SMD-1', desc: 'Sale cancelled, not shipped in time', recipient: 'seller', channels: ['email', 'push', 'admin'], status: 'active' }
       ],
@@ -5098,7 +5053,6 @@
         { id: 'CLAIM-S-3', desc: 'Buyer accepted seller offer', recipient: 'seller', channels: ['email', 'push', 'admin'], status: 'active' },
         { id: 'CLAIM-S-4', desc: 'Claim cancelled by buyer', recipient: 'seller', channels: ['email', 'push', 'admin'], status: 'active' }
       ],
-      'u-ce-contacts-seller': [],
       'u-claim-transaction-cancelled': [
         { id: 'BP-PST-SMD-1', desc: 'Sale cancelled, not shipped in time', recipient: 'seller', channels: ['email', 'push', 'admin'], status: 'active' }
       ],
